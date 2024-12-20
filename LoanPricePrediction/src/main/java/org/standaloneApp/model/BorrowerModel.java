@@ -14,7 +14,7 @@ public class BorrowerModel {
 	private int bid;
 	private String name;
 	private java.sql.Date dob;
-	private String phno;
+	private String phno; //note phone number dtype original is int
 	private String email;
 	private String id_proof;
 }
