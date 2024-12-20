@@ -15,7 +15,7 @@ public class LoanDeafultPredictionApp {
 		BorrowerServiceImpl borrowerService = new BorrowerServiceImpl();
 
 		do {
-			System.out.println("1. Add Borrower details \n2. Delete Borrower record \n3. Exit \nEnter choice : ");
+			System.out.println("1. Add Borrower details \n2. Display Borrower details \n3. Update Borrower Details \n4. Delete Borrower record \n5. Exit \nEnter choice : ");
 			int ch = sc.nextInt();
 
 			switch (ch) {
@@ -41,33 +41,30 @@ public class LoanDeafultPredictionApp {
 					System.out.println("Enter Id proof number ");
 					String idno = sc.nextLine();
 
-					BorrowerModel model = new BorrowerModel(0, bnm, sqlDate, phno, em, idno);
-					boolean ans = borrowerService.isAddNewBorrower(model);
+					System.out.println(borrowerService.isAddNewBorrower(new BorrowerModel(0, bnm, sqlDate, phno, em, idno))? "Borrower registered successfully...." : " Registeration failed ");
 
-					if (ans)
-						System.out.println("Borrower registered successfully....");
-					else
-						System.out.println(" Registeration failed ");
 				} catch (Exception e) {
 					System.out.println("Invalid date format. Please enter the date in yyyy-MM-dd format.");
 				}
-
 				break;
 
 			case 2:
+				//Display Borrower details
+				
+				break;
+				
+			case 3:
+				//update
+				break;
+				
+			case 4:
 				sc.nextLine();
 				System.out.println("Enter Id proof number to delete record");
 				String idno = sc.nextLine();
-				
-				boolean ans=borrowerService.deleteBorrowerById(idno);
-				if(ans)
-					System.out.println("Borrower deleted successfully....");
-				else
-					System.out.println("Failed to delete borrower ");
-				
+				System.out.println(borrowerService.deleteBorrowerById(idno)?"Borrower deleted successfully....":"Failed to delete borrower ");
 				break;
-
-			case 3:
+				
+			case 5:
 				System.exit(0);
 
 			default:
