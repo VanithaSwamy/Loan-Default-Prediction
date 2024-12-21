@@ -63,10 +63,13 @@ public class LoanDeafultPredictionApp {
 				String idno = sc.nextLine();
 				System.out.println(borrowerService.deleteBorrowerById(idno)?"Borrower deleted successfully....":"Failed to delete borrower ");
 				break;
-				
+			
 			case 5:
 				System.exit(0);
 
+			case 6:
+				
+				break;
 			default:
 				System.out.println("Invalid choice ....");
 			}
