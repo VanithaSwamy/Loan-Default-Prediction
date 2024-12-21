@@ -5,14 +5,14 @@ import java.sql.Date;
 import java.util.*;
 
 import org.standaloneApp.model.BorrowerModel;
-import org.standaloneApp.service.BorrowerServiceImpl;
 import org.standaloneApp.service.BorrowerService;
+import org.standaloneApp.service.BorrowerServiceImpl;
 
 public class LoanDeafultPredictionApp {
 
 	public static void main(String[] args) {
 		Scanner sc = new Scanner(System.in);
-		BorrowerService borrowerService = new BorrowerServiceImpl();
+		 BorrowerService borrowerService = new BorrowerServiceImpl() ;
 
 		do {
 			System.out.println(
