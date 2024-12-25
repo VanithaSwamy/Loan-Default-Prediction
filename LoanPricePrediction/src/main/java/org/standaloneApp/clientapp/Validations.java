@@ -16,7 +16,7 @@ public class Validations {
 			return true;
 		else
 			return false;
-	}
+  }
 	/*-------TO VALIDATE USER DATE-------*/
 	public boolean isDateValidate(java.util.Date newDate) throws ParseException {
 		SimpleDateFormat sDF = new SimpleDateFormat("yyyy-MM-dd");
@@ -29,7 +29,6 @@ public class Validations {
 		}
 		return false;
 	}
-
 	/*---------TO VALIDATE USER PHONE NUMBER*/
 	public boolean isPhoneNumbValidate(String newPhoneNumb) {
 		// to check if phone number is not equal to 10digit
