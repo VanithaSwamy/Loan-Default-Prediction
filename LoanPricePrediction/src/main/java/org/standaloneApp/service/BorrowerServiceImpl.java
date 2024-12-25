@@ -56,4 +56,9 @@ public class BorrowerServiceImpl implements BorrowerService {
 	public boolean isUpdateNewBDate(String currName, String idProof, Date sqlDate1) {
 		return user.isUpdateNewBDate(currName,idProof,sqlDate1);
 	}
+
+	@Override
+	public Optional<BorrowerModel> getBorrower(String currName, String idProof) {
+		return user.getBorrower(currName, idProof);
+	}
 }

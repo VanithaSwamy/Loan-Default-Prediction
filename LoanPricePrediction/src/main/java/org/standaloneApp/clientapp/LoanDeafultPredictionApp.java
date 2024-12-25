@@ -8,7 +8,9 @@ import org.standaloneApp.model.BorrowerModel;
 import org.standaloneApp.service.BorrowerServiceImpl;
 import org.standaloneApp.service.BorrowerService;
 
+
 public class LoanDeafultPredictionApp {
+	
 	public static int option;
 	public static void main(String[] args) {
 		Scanner sc = new Scanner(System.in);
@@ -22,86 +24,76 @@ public class LoanDeafultPredictionApp {
 			int ch = sc.nextInt();
 
 			switch (ch) {
+			/*------TO add single borrower--------*/
 			case 1:
+				Validations validate1 = new Validations();
+				
 				try {
 					sc.nextLine();
 
 					System.out.println("Enter Borrower name ");
 					String bnm = sc.nextLine();
-
+					
+					//to add validation in username
+					boolean valName = validate1.isNameValidate(bnm); //to check name validate
+					
 					System.out.println("Enter Date of birth in yyyy-MM-dd format ");
 					String dob = sc.nextLine();
 					SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
 					java.util.Date utilDate = dateFormat.parse(dob);
+					boolean valDate = validate1.isDateValidate(utilDate);//to check date validate
 					Date sqlDate = new Date(utilDate.getTime());
 
 					System.out.println("Enter Contact number ");
 					String phno = sc.nextLine();
-
+					boolean valPhone = validate1.isPhoneNumbValidate(phno);//to check phone validate
+					
 					System.out.println("Enter Email ID ");
 					String em = sc.nextLine();
+					boolean valEmail = validate1.isEmailAdrsValidate(em);
 
 					System.out.println("Enter Id proof number ");
 					String idno = sc.nextLine();
+					boolean valIdProof = validate1.isIdProofValidate(idno);
 
-					System.out.println(
-							borrowerService.isAddNewBorrower(new BorrowerModel(0, bnm, sqlDate, phno, em, idno))
-									? "Borrower registered successfully...."
-									: " Registeration failed ");
+					//if all validation are correct
+					if(valName && valDate && valPhone && valEmail && valIdProof) {
+						System.out.println(
+								borrowerService.isAddNewBorrower(new BorrowerModel(0, bnm, sqlDate, phno, em, idno))
+										? "Borrower registered successfully...."
+										: " Registeration failed ");
 
+					}else {
+						System.out.println("Error from client to add New Borrower");
+						
+					}
 				} catch (Exception e) {
-					System.out.println("Invalid date format. Please enter the date in yyyy-MM-dd format.");
+					System.out.println("Invalid data please enter valid data And Error:"+e);
 				}
 				break;
+				
+				/*---------------------------to display only single matching borrower record----------------*/
 			case 2:
-				Optional<List<BorrowerModel>> borrowerList = borrowerService.getAllBorrowers();
-				borrowerList.ifPresentOrElse(
-						list -> list.forEach(
-								borr -> System.out.println(borr.getBid() + "\t" + borr.getName() + "\t" + borr.getDob()
-										+ "\t" + borr.getPhno() + "\t" + borr.getEmail() + "\t" + borr.getId_proof())),
-						() -> System.out.println("There is no data present in table"));
-//				if(!borrowerList.contains(null)) {
-//					System.out.println("To display all Borrowers Details.....\n");
-//					borrowerList.forEach((list)->System.out.println(list.getBid()+"\t"+list.getName()+"\t"+list.getDob()+"\t"+list.getPhno()+"\t"+list.getEmail()+"\t"+list.getId_proof()));
-//				}else {
-//						System.out.println("No Data Present...!!!");
-//				}
-
+				sc.nextLine();
+				System.out.println("Enter borrower name :");
+				String currBName1 = sc.nextLine();
+				System.out.println("Enter borrower id_proof:");
+				String idProof1 = sc.nextLine();
+				
+				Optional<BorrowerModel> borrModel = borrowerService.getBorrower(currBName1, idProof1);
+			    borrModel.ifPresentOrElse(
+			    		borr -> System.out.println("Borrower Found:\n" +borr.getBid() + "\t" + borr.getName() + "\t" + borr.getDob()
+						+ "\t" + borr.getPhno() + "\t" + borr.getEmail() + "\t" + borr.getId_proof()),
+			        () -> System.out.println("Borrower not found")
+			    );
 				break;
-//			case 21:
-//				// to update borrower contact number
-//				sc.nextLine();
-//				System.out.println("Enter borrower name :");
-//				String currBName = sc.nextLine();
-//				System.out.println("Enter borrower id_proof:");
-//				String idProof = sc.nextLine();
-//				System.out.println("Enter new Phone:");
-//				String newBPhoneNumb = sc.nextLine();
-//
-//				boolean b = borrowerService.isUpdatePhoneNumb(currBName, idProof, newBPhoneNumb);
-//				if (b)
-//					System.out.println("Phone Number  Update Successfully...");
-//				else
-//					System.out.println("Phone Number Not Updated...");
-//				break;
+//				Optional<List<BorrowerModel>> borrowerList = borrowerService.getAllBorrowers();
+//				borrowerList.ifPresentOrElse(
+//						list -> list.forEach(
+//								borr -> System.out.println(borr.getBid() + "\t" + borr.getName() + "\t" + borr.getDob()
+//										+ "\t" + borr.getPhno() + "\t" + borr.getEmail() + "\t" + borr.getId_proof())),
+//						() -> System.out.println("There is no data present in table"));
 
-//			case 3:
-//
-//				// to update borrower email address
-//				sc.nextLine();
-//				System.out.println("Enter borrower name :");
-//				currBName = sc.nextLine();
-//				System.out.println("Enter borrower id_proof:");
-//				idProof = sc.nextLine();
-//
-//				System.out.println("Enter new Email address");
-//				String newEmailAdrs = sc.nextLine();
-//				boolean b1 = borrowerService.isUpdateEmailAdrs(currBName, idProof, newEmailAdrs);
-//				if (b1)
-//					System.out.println("Email Address Updated Successfully....");
-//				else
-//					System.out.println("Email Address Not Updated");
-//				break;
 
 			case 4:
 				sc.nextLine();
@@ -201,12 +193,17 @@ public class LoanDeafultPredictionApp {
 							sc.nextLine();
 							System.out.println("Enter new Email address");
 							String newEmailAdrs1 = sc.nextLine();
-							boolean b11 = borrowerService.isUpdateEmailAdrs(currBName, idProof, newEmailAdrs1);
-							if (b11)
-								System.out.println("Email Address Updated Successfully....");
-							else
-								System.out.println("Email Address Not Updated");
-
+							boolean newEmailAdrsVal = validate.isEmailAdrsValidate(newEmailAdrs1);
+							if(newEmailAdrsVal) {
+								boolean b11 = borrowerService.isUpdateEmailAdrs(currBName, idProof, newEmailAdrs1);
+								if (b11)
+									System.out.println("Email Address Updated Successfully....");
+								else
+									System.out.println("Email Address Not Updated");
+							}else {
+								System.out.println("InValid email..please enter valid email adrs");
+							}
+							
 							break;
 						default:
 							System.out.println("Worng choice..Please enter correct choice!");
