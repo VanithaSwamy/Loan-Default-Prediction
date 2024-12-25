@@ -210,4 +210,36 @@ public class BorrowerRepositoryImpl extends DBState implements BorrowerRepositor
 		}
 	}
 
+	@Override
+	public Optional<BorrowerModel> getBorrower(String currName, String idProof) {
+		 try {
+		        stmt = conn.prepareStatement("SELECT * FROM borrower WHERE name = ? AND id_proof = ?");
+		        stmt.setString(1, currName);
+		        stmt.setString(2, idProof);
+		        rs = stmt.executeQuery();
+
+		        if (rs.next()) {
+		            BorrowerModel borrower = new BorrowerModel();
+		            borrower.setBid(rs.getInt(1));
+		            borrower.setName(rs.getString(2));
+		            
+		            // Retrieve and set the date_of_birth
+		            java.sql.Date dobSql = rs.getDate(3);
+		            if (dobSql != null) {
+		                borrower.setDob(dobSql); 
+		            }
+//		            borrower.setDob(rs.getString(3));
+		            borrower.setPhno(rs.getString(4));
+		            borrower.setEmail(rs.getString(5));
+		            borrower.setId_proof(rs.getString(6));
+		            
+		            return Optional.of(borrower);
+		        }
+		    } catch (Exception ex) {
+		        System.out.println("Error: " + ex.getMessage());
+		    }
+		    // Return empty Optional if no record found or in case of an error
+		    return Optional.empty();
+	}
+
 }

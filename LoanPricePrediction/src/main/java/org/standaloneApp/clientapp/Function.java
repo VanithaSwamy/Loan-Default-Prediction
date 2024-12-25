@@ -78,7 +78,7 @@ public class Function {
 
 			do {
 				System.out.println(
-						"1: Add Borrower details \n2: Update Borrower Details \n3: Delete Borrower record \n4: Add Data for Loan Evaluation \n5. Exit \nEnter choice : ");
+						"1: Add Borrower details \n2: View Borrower Details \n3: Update Borrower Details \n4: Delete Borrower record \n5: Add Data for Loan Evaluation \n6: Exit \nEnter choice : ");
 				int ch = sc.nextInt();
 
 				switch (ch) {
@@ -87,18 +87,22 @@ public class Function {
 					break;
 
 				case 2:
+					Function.getDetails(borrowerService);
+					break;
+					
+				case 3:
 					Function.updateBorrower(borrowerService);
 					break;
 
-				case 3:
+				case 4:
 					Function.deleteBorrower(borrowerService);
 					break;
 
-				case 4:
+				case 5:
 					Function.DataEvaluation(borrowerService);
 					break;
 
-				case 5:
+				case 6:
 					System.out.println("Exiting the program...");
 					running = false; // Stop the loop
 					break;
@@ -237,11 +241,16 @@ public class Function {
 					sc.nextLine();
 					System.out.println("Enter New Name:");
 					String newName = sc.nextLine();
-					boolean newN = borrowerService.isUpdateNewName(currBName, idProof, newName);
-					if (newN)
-						System.out.println("New Name Update Successfully...");
-					else
-						System.out.println("New Name Not Updated...");
+					if(validate.isNameValidate(newName)) {
+						boolean newN = borrowerService.isUpdateNewName(currBName, idProof, newName);
+						if (newN)
+							System.out.println("New Name Update Successfully...");
+						else
+							System.out.println("New Name Not Updated...from DB");
+					}else
+					{
+						System.out.println("New Name Not Updated...from Client Side");
+					}
 
 					break;
 				case 2:
@@ -252,13 +261,19 @@ public class Function {
 						String newD = sc.nextLine();
 						SimpleDateFormat dateFormat1 = new SimpleDateFormat("yyyy-MM-dd");
 						java.util.Date utilDate1 = dateFormat1.parse(newD);
-						Date sqlDate1 = new Date(utilDate1.getTime());
-						boolean newBDate = borrowerService.isUpdateNewBDate(currBName, idProof, sqlDate1);
-						if (newBDate)
-							System.out.println("New Birth Date Update Successfully...");
-						else
-							System.out.println("New Birth Date Not Updated...");
+						boolean isValidDate = validate.isDateValidate(utilDate1); //to add date validation
+						if(isValidDate)
+						{
+							Date sqlDate1 = new Date(utilDate1.getTime());//to convert into date from java to sql
+							boolean newBDate = borrowerService.isUpdateNewBDate(currBName, idProof, sqlDate1);
+							if (newBDate)
+								System.out.println("New Birth Date Update Successfully...");
+							else
+								System.out.println("New Birth Date Not Updated...DB");
 
+						}else {
+							System.out.println("New Birth Date Not Updated...ClientApp");
+						}
 					} catch (Exception ex) {
 						System.out.println("Error message: " + ex);
 						System.out.println("Unable to update user birth date ");
@@ -269,12 +284,16 @@ public class Function {
 					sc.nextLine();
 					System.out.println("Enter new Phone:");
 					String newBPhoneNumb1 = sc.nextLine();
-
-					boolean b2 = borrowerService.isUpdatePhoneNumb(currBName, idProof, newBPhoneNumb1);
-					if (b2)
-						System.out.println("Phone Number  Update Successfully...");
-					else
-						System.out.println("Phone Number Not Updated...");
+					boolean validPNumb = validate.isPhoneNumbValidate(newBPhoneNumb1);
+					if(validPNumb) {
+						boolean b2 = borrowerService.isUpdatePhoneNumb(currBName, idProof, newBPhoneNumb1);
+						if (b2)
+							System.out.println("Phone Number  Update Successfully...");
+						else
+							System.out.println("Phone Number Not Updated...");
+					}else {
+						System.out.println("Phone Number Not Updated...ClientApp");
+					}	
 
 					break;
 				case 4:
@@ -282,12 +301,16 @@ public class Function {
 					sc.nextLine();
 					System.out.println("Enter new Email address");
 					String newEmailAdrs1 = sc.nextLine();
-					boolean b11 = borrowerService.isUpdateEmailAdrs(currBName, idProof, newEmailAdrs1);
-					if (b11)
-						System.out.println("Email Address Updated Successfully....");
-					else
-						System.out.println("Email Address Not Updated");
-
+					boolean newEmailAdrsVal = validate.isEmailAdrsValidate(newEmailAdrs1);
+					if(newEmailAdrsVal) {
+						boolean b11 = borrowerService.isUpdateEmailAdrs(currBName, idProof, newEmailAdrs1);
+						if (b11)
+							System.out.println("Email Address Updated Successfully....");
+						else
+							System.out.println("Email Address Not Updated");
+					}else {
+						System.out.println("InValid email..please enter valid email adrs");
+					}
 					break;
 
 				case 5:
@@ -354,5 +377,20 @@ public class Function {
 				System.out.println("Thank You For Response");
 			}
 		}
+	}
+	
+	public static void getDetails(BorrowerService borrowerService) {
+		sc.nextLine();
+		System.out.println("Enter borrower name :");
+		String currBName1 = sc.nextLine();
+		System.out.println("Enter borrower id_proof:");
+		String idProof1 = sc.nextLine();
+		
+		Optional<BorrowerModel> borrModel = borrowerService.getBorrower(currBName1, idProof1);
+	    borrModel.ifPresentOrElse(
+	    		borr -> System.out.println("Borrower Found:\n" +borr.getBid() + "\t" + borr.getName() + "\t" + borr.getDob()
+				+ "\t" + borr.getPhno() + "\t" + borr.getEmail() + "\t" + borr.getId_proof()),
+	        () -> System.out.println("Borrower not found")
+	    );
 	}
 }
