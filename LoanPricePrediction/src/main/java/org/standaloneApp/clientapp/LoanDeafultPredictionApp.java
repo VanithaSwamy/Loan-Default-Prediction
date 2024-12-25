@@ -18,7 +18,8 @@ public class LoanDeafultPredictionApp {
 
 		while (running) {
 			System.out.println("Welcome to the Portal");
-			System.out.println("1: User");
+			System.out.println("1: User Login");
+			System.out.println("2: User Register");
 			System.out.println("2: Admin");
 			System.out.println("3: Exit");
 			System.out.print("Enter your choice: ");
@@ -29,12 +30,16 @@ public class LoanDeafultPredictionApp {
 			case 1:
 				Function.userLogin(admin,borrowerService);
 				break;
-
+			
 			case 2:
+				Function.addBorrower(borrowerService);
+				break;
+				
+			case 3:
 				Function.adminLogin(admin,borrowerService);
 				break;
 
-			case 3:
+			case 4:
 				System.out.println("Exiting the application. Goodbye!");
 				running = false; // Exit the loop
 				break;
