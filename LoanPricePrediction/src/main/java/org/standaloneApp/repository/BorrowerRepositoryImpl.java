@@ -16,7 +16,7 @@ public class BorrowerRepositoryImpl extends DBState implements BorrowerRepositor
 			stmt = conn.prepareStatement(Query.addBorrower);
 			stmt.setString(1, model.getName());
 			stmt.setDate(2, model.getDob());
-			stmt.setString(3, model.getPhno());
+			stmt.setString(3, model.getPhno()); 
 			stmt.setString(4, model.getEmail());
 			stmt.setString(5, model.getId_proof());
 
