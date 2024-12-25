@@ -19,4 +19,6 @@ public interface BorrowerService{
 	public boolean isBorrowerPresent(String currBName,String idProof);
 	public boolean isUpdateNewName(String currBName,String idProof,String newName);
 	public boolean isUpdateNewBDate(String currName,String idProof,Date sqlDate1);
+	
+	public Optional<BorrowerModel> getBorrower(String currName,String idProof);
 }

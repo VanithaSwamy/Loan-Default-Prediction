@@ -10,7 +10,7 @@ public interface BorrowerRepository {
 	
 	public boolean isAddNewBorrower(BorrowerModel model);
 	public int getBorrowerId(String idproof);
-	public boolean deleteBorrowerById(String idproof);
+	public boolean deleteBorrowerById(String idproof); 
 	
 	public Optional<List<BorrowerModel>> getAllBorrowers(); //to list all borrower thechaitu
 	public int getBorrowerIdByNameIdProof(String currBName,String idProof); //to get borrower id thechaitu
@@ -18,7 +18,9 @@ public interface BorrowerRepository {
 	public boolean isUpdateEmailAdrs(String currBName,String idProof,String newEmailAdrs); //thechaitu
 	
 	//to check borrower present or not
-		public boolean isBorrowerPresent(String currBName,String idProof);
-		public boolean isUpdateNewName(String currBName,String idProof,String newName); //to update new name
-		public boolean isUpdateNewBDate(String currBName,String idProof,Date bdate); //to update new birthdate
+	public boolean isBorrowerPresent(String currBName,String idProof);
+	public boolean isUpdateNewName(String currBName,String idProof,String newName); //to update new name
+	public boolean isUpdateNewBDate(String currBName,String idProof,Date bdate);//to update new birthdate
+
+	public Optional<BorrowerModel> getBorrower(String currName,String idProof);//to get single borrower
 }

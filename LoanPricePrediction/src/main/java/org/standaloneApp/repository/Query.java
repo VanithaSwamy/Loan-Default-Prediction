@@ -13,4 +13,6 @@ public class Query {
 	public static String updateBorrowerNewName1 = "update borrower set name =? where borrower_id = ?;";
 	public static String updateBorrowerBdate ="update borrower set dob = ? where borrower_id = ?;";
 	public static String updateBorrowerContNumb = "update borrower set contact_number = ? where borrower_id=?;";
+	
+	public static String getAdmincredentials="select * from admin where name=? and password=?;";
 }
