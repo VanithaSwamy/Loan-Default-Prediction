@@ -208,7 +208,7 @@ public class BorrowerRepositoryImpl extends DBState implements BorrowerRepositor
 	@Override
 	public Optional<BorrowerModel> getBorrower(String currName, String idProof) {
 		 try {
-		        stmt = conn.prepareStatement("SELECT * FROM borrower WHERE name = ? AND id_proof = ?");
+		        stmt = conn.prepareStatement(Query.getBorrowerDetail);
 		        stmt.setString(1, currName);
 		        stmt.setString(2, idProof);
 		        rs = stmt.executeQuery();
@@ -232,8 +232,10 @@ public class BorrowerRepositoryImpl extends DBState implements BorrowerRepositor
 		        }
 		    } catch (Exception ex) {
 		        System.out.println("Error: " + ex.getMessage());
+		        // Return empty Optional if no record found or in case of an error
+			    return Optional.empty();
 		    }
-		    // Return empty Optional if no record found or in case of an error
-		    return Optional.empty();
+		 return Optional.empty();
+		   
 	}
 }

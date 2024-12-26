@@ -15,4 +15,7 @@ public class Query {
 	public static String updateBorrowerContNumb = "update borrower set contact_number = ? where borrower_id=?;";
 	
 	public static String getAdmincredentials="select * from admin where name=? and password=?;";
+	
+	public static String getBorrowerDetail = "Select * from borrower where name = ? AND id_proof=?";
+	public static String getLoanType = "select * from loan_type;";//to list all loan details
 }

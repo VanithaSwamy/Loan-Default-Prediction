@@ -3,8 +3,10 @@ package org.standaloneApp.clientapp;
 import java.sql.Date;
 import java.text.SimpleDateFormat;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.Scanner;
+import java.util.function.IntConsumer;
 
 import org.standaloneApp.model.BorrowerModel;
 import org.standaloneApp.service.AdminService;
@@ -45,7 +47,7 @@ public class Function {
 					break;
 
 				case 3:
-					// add loan types
+					addLoanType(admin,borrowerService);
 					break;
 
 				case 4:
@@ -65,7 +67,61 @@ public class Function {
 			System.out.println("Invalid credentials. Please try again.");
 	}
 
-	static void userLogin(AdminService admin, BorrowerService borrowerService) {
+	//to add Loan Type
+	public static void addLoanType(AdminService admin, BorrowerService borrowerService) {
+		try {
+			boolean run = true;
+				while(run){
+					sc.nextLine();
+					System.out.println("\nEnter below choice:"
+							+ "\n1:Display All Avl Loan Type"
+							+ "\n2:Add New Loan Type"
+							+ "\n3:Update Loan Type Name"
+							+ "\n4:Delete Loan Type"
+							+ "\n5:Exit");
+					int choice = sc.nextInt();
+					switch(choice) {
+					case 1:
+						Optional<Map<Integer,String>> loanTypes = admin.getLoanType();
+						System.out.println("Loan Types:");
+				        loanTypes.ifPresentOrElse(
+				            map -> map.forEach((key, value) -> {
+				                Optional<String> optionalValue = Optional.ofNullable(value);
+				                optionalValue.ifPresent(
+				                    loanName -> System.out.println("LoanType ID: " + key + ", LoanType Name: " + loanName)
+				                );
+				            }),
+				            () -> System.out.println("No loan types available.")
+				        );
+						
+						break;
+					case 2:
+						try {
+							sc.nextLine();
+							System.out.println("Enter New LoanType:");
+							String ltype = sc.nextLine();
+							
+						}catch(Exception ex) {
+							System.out.println("Error to add Loan Type:"+ex);
+						}
+						
+						break;
+					case 3:
+						break;
+					case 4:
+						break;
+					case 5:System.out.println("Out of Loan Type");
+						run = false;
+						break;
+					default:System.out.println("Wrong Choice");
+						break;
+					}	
+				}
+		}catch(Exception ex) {
+			System.out.println("Exception in AddLoanType: "+ex);
+		}
+	}
+ 	static void userLogin(AdminService admin, BorrowerService borrowerService) {
 		sc.nextLine();//
 		System.out.println("---- User Login ----");
 		System.out.print("Enter username: ");
