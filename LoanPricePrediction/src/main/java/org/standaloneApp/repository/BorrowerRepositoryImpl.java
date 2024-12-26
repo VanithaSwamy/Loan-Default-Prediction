@@ -16,7 +16,7 @@ public class BorrowerRepositoryImpl extends DBState implements BorrowerRepositor
 			stmt = conn.prepareStatement(Query.addBorrower);
 			stmt.setString(1, model.getName());
 			stmt.setDate(2, model.getDob());
-			stmt.setString(3, model.getPhno());
+			stmt.setString(3, model.getPhno()); 
 			stmt.setString(4, model.getEmail());
 			stmt.setString(5, model.getId_proof());
 
@@ -39,12 +39,10 @@ public class BorrowerRepositoryImpl extends DBState implements BorrowerRepositor
 				return rs.getInt(1);
 			else
 				return -1;
-
 		} catch (Exception e) {
 			System.out.println("Error is " + e.getMessage());
 			return -1;
 		}
-
 	}
 
 	@Override
@@ -62,7 +60,6 @@ public class BorrowerRepositoryImpl extends DBState implements BorrowerRepositor
 			System.out.println("Error is " + e.getMessage());
 			return false;
 		}
-
 	}
 
 	@Override
@@ -89,41 +86,7 @@ public class BorrowerRepositoryImpl extends DBState implements BorrowerRepositor
 			return Optional.empty();
 		}
 	}
-	//to display single borrwer record 
-	@Override
-	public Optional<BorrowerModel> getBorrower(String currName, String idProof) {
-	    try {
-	        stmt = conn.prepareStatement("SELECT * FROM borrower WHERE name = ? AND id_proof = ?");
-	        stmt.setString(1, currName);
-	        stmt.setString(2, idProof);
-	        rs = stmt.executeQuery();
 
-	        if (rs.next()) {
-	            BorrowerModel borrower = new BorrowerModel();
-	            borrower.setBid(rs.getInt(1));
-	            borrower.setName(rs.getString(2));
-	            
-	            // Retrieve and set the date_of_birth
-	            java.sql.Date dobSql = rs.getDate(3);
-	            if (dobSql != null) {
-	                borrower.setDob(dobSql); 
-	            }
-//	            borrower.setDob(rs.getString(3));
-	            borrower.setPhno(rs.getString(4));
-	            borrower.setEmail(rs.getString(5));
-	            borrower.setId_proof(rs.getString(6));
-	            
-	            return Optional.of(borrower);
-	        }
-	    } catch (Exception ex) {
-	        System.out.println("Error: " + ex.getMessage());
-	    }
-	    // Return empty Optional if no record found or in case of an error
-	    return Optional.empty();
-	}
-
-	
-	
 	// to get borrower id by its name and idproof
 	@Override
 	public int getBorrowerIdByNameIdProof(String currBName, String idProof) {
@@ -157,7 +120,6 @@ public class BorrowerRepositoryImpl extends DBState implements BorrowerRepositor
 			}else {
 				return false;
 			}
-
 		}catch(Exception ex) {
 			System.out.println("Exception is: "+ex);
 			return false;
@@ -179,7 +141,6 @@ public class BorrowerRepositoryImpl extends DBState implements BorrowerRepositor
 			}else {
 				return false;
 			}
-			
 		}catch(Exception ex) {
 			System.out.println("Error message isUpdateEmailAdrs: "+ex);
 			return false;
@@ -230,13 +191,13 @@ public class BorrowerRepositoryImpl extends DBState implements BorrowerRepositor
 			int borrowerId = this.getBorrowerIdByNameIdProof(currBName, idProof);
 			if(borrowerId != -1)
 			{
-				stmt = conn.prepareStatement(Query.updateBorrowerBdate);
-				stmt.setDate(1, bdate);
-				stmt.setInt(2, borrowerId);
+				stmt = conn.prepareStatement(Query.updateBorrowerBdate);	
+				stmt.setDate(1,bdate);
+				stmt.setInt(2,borrowerId);
 				int val  = stmt.executeUpdate();
 				return val > 0 ? true: false;
 			}else {
-				return true;
+				return false;
 			}	
 		}catch(Exception ex) {
 			System.out.println("Error message is: "+ex);
@@ -244,6 +205,35 @@ public class BorrowerRepositoryImpl extends DBState implements BorrowerRepositor
 		}
 	}
 
-	
+	@Override
+	public Optional<BorrowerModel> getBorrower(String currName, String idProof) {
+		 try {
+		        stmt = conn.prepareStatement("SELECT * FROM borrower WHERE name = ? AND id_proof = ?");
+		        stmt.setString(1, currName);
+		        stmt.setString(2, idProof);
+		        rs = stmt.executeQuery();
 
+		        if (rs.next()) {
+		            BorrowerModel borrower = new BorrowerModel();
+		            borrower.setBid(rs.getInt(1));
+		            borrower.setName(rs.getString(2));
+		            
+		            // Retrieve and set the date_of_birth
+		            java.sql.Date dobSql = rs.getDate(3);
+		            if (dobSql != null) {
+		                borrower.setDob(dobSql); 
+		            }
+//		            borrower.setDob(rs.getString(3));
+		            borrower.setPhno(rs.getString(4));
+		            borrower.setEmail(rs.getString(5));
+		            borrower.setId_proof(rs.getString(6));
+		            
+		            return Optional.of(borrower);
+		        }
+		    } catch (Exception ex) {
+		        System.out.println("Error: " + ex.getMessage());
+		    }
+		    // Return empty Optional if no record found or in case of an error
+		    return Optional.empty();
+	}
 }
