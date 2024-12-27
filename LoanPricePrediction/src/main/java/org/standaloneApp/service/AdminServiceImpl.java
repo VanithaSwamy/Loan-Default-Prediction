@@ -17,5 +17,17 @@ public class AdminServiceImpl implements AdminService {
 	public Optional<Map<Integer, String>> getLoanType() {
 		return loanDetails.getLoanType();
 	}
+	@Override
+	public boolean updateLoanName(String currName, String newName) {
+		return loanDetails.updateLoanName(currName, newName);
+	}
+	@Override
+	public boolean isAddNewLoanType(String newName) {
+		return loanDetails.isAddNewLoanType(newName);
+	}
+	@Override
+	public boolean deleteLoanName(String currName) {
+		return loanDetails.deleteLoanName(currName);
+	}
 
 }
