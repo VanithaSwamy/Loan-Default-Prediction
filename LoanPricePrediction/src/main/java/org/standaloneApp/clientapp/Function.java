@@ -67,7 +67,7 @@ public class Function {
 			System.out.println("Invalid credentials. Please try again.");
 	}
 
-	//to add Loan Type
+	//Loan Type
 	public static void addLoanType(AdminService admin, BorrowerService borrowerService) {
 		try {
 			boolean run = true;
@@ -100,15 +100,48 @@ public class Function {
 							sc.nextLine();
 							System.out.println("Enter New LoanType:");
 							String ltype = sc.nextLine();
-							
+							boolean valName = validate.isNameValidate(ltype);
+							if(valName) {
+								if(admin.isAddNewLoanType(ltype)) 
+									System.out.println("Successfully...Added new Loan");
+								else 
+									System.out.println("Error to add new Loan");
+								
+							}else {
+								System.out.println("Please Enter Correct Loan Name");
+							}
 						}catch(Exception ex) {
 							System.out.println("Error to add Loan Type:"+ex);
 						}
-						
 						break;
 					case 3:
+						try {
+							sc.nextLine();
+							System.out.println("Enter old Loan Name to update");
+							String oldName = sc.nextLine();
+							System.out.println("Enter new Name :");
+							String newName = sc.nextLine();
+							
+							if(admin.updateLoanName(oldName, newName)) {
+								System.out.println("Loan Name Update");
+							}else {
+								System.out.println("Loan Name Not Updated!!");
+							}
+					}catch(Exception ex) {
+						System.out.println("Error to update Loan Type from Function:"+ex);
+					}
 						break;
 					case 4:
+						try {
+							sc.nextLine();
+							System.out.println("Enter Loan Name to delete:");
+							String currName = sc.nextLine();
+							if(admin.deleteLoanName(currName)) {
+								System.out.println("Loan Name Update");
+							}
+						}catch(Exception ex) {
+							System.out.println("Error to Delete Loan Type from Function:"+ex);
+						}
 						break;
 					case 5:System.out.println("Out of Loan Type");
 						run = false;
