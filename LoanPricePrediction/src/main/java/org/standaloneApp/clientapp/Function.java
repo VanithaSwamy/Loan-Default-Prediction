@@ -8,15 +8,27 @@ import java.util.Optional;
 import java.util.Scanner;
 import java.util.function.IntConsumer;
 
+import org.apache.log4j.Level;
+import org.apache.log4j.Logger;
+import org.apache.log4j.PropertyConfigurator;
 import org.standaloneApp.model.BorrowerModel;
+import org.standaloneApp.model.CreditModel;
+import org.standaloneApp.model.IncomeModel;
+import org.standaloneApp.model.LoanModel;
+import org.standaloneApp.repository.BorrowerRepositoryImpl;
 import org.standaloneApp.service.AdminService;
 import org.standaloneApp.service.BorrowerService;
 import org.standaloneApp.service.BorrowerServiceImpl;
 
+
 public class Function {
 	private static Scanner sc = new Scanner(System.in);
 	private static Validations validate = new Validations();
-
+	private static Logger logger = Logger.getLogger(BorrowerRepositoryImpl.class);
+	static {
+		PropertyConfigurator.configure("C:\\Users\\Admin\\git\\Loan-Default-Prediction\\LoanPricePrediction\\src\\main\\resources\\application.properties");
+		logger.setLevel(Level.ALL);
+	}
 	static void adminLogin(AdminService admin, BorrowerService borrowerService) {
 		sc.nextLine();
 		System.out.println("---- Admin Login ----");
@@ -27,8 +39,9 @@ public class Function {
 
 		if (admin.adminLogin(adminUsername, adminPassword)) {
 			boolean running = true;
-
 			while (running) {
+				logger.info("Admin Login to Application");
+				
 				System.out.println("\n--- Welcome to Admin Portal ---");
 				System.out.println("1: View All Borrowers");
 				System.out.println("2: Delete Borrower");
@@ -57,6 +70,8 @@ public class Function {
 					break;
 
 				case 5:
+					logger.info("Admin LoginOut from Application");
+					
 					System.out.println("Exiting the application. Goodbye!");
 					running = false; // Exit the loop
 					break;
@@ -82,6 +97,7 @@ public class Function {
 			boolean running = true;
 
 			do {
+				logger.info("User Login into Application");
 //				System.out.println("1: Add Borrower details \n2: View Borrower Details \n3: Update Borrower Details \n4: Delete Borrower record \n5: Add Data for Loan Evaluation \n6: Exit \nEnter choice : ");
 				System.out.println(
 						"\n2: View Borrower Details "
@@ -109,10 +125,11 @@ public class Function {
 					break;
 
 				case 5:
-					Function.DataEvaluation(borrowerService);
+					Function.DataEvaluation(borrowerService,borrName,idno);
 					break;
 
 				case 6:
+					logger.info("User LoginOut from Application");
 					System.out.println("Exiting the program...");
 					running = false; // Stop the loop
 					break;
@@ -168,20 +185,27 @@ public class Function {
 										: " Registeration failed ");
 					} else if (valName == false) {
 						System.out.println("Enter valid borrower name");
+						logger.info("User enter wrong Name :"+valName);
 					} else if (valPhno == false) {
 						System.out.println("Enter valid phone number");
+						logger.info("User enter wrong Phone Number: "+valPhno);
 					} else if (valEm == false) {
 						System.out.println("Enter valid email Id");
+						logger.info("User enter wrong Email Address: "+valEm);
 					} else if (valProof ==  false) {
 						System.out.println("Enter valid Id Proof ");
+						logger.info("User enter wrong ID Proof: "+valProof);
 					} else if (valDate == false){
 						System.out.println("Enter valid Date  ");
+						logger.info("User enter wrong Date:"+valDate);
 					}
 					else {
 						System.out.println("Invalid data entered...");
+						logger.info("Invalid data entered...");
 					}
 				} catch (Exception e) {
-					System.out.println("Invalid date format. Please enter the date in yyyy-MM-dd format.");
+					logger.info("Unable to Register New Borrower in Application "+e);
+					System.out.println("Error to Register New Borrower");
 				}
 			} else {
 				System.out.println("Thank You For Response");
@@ -189,18 +213,18 @@ public class Function {
 		}
 
 	}
- 	public static void loanPrediction(BorrowerService borrowerService,String borrName,String idProof) {
- 			try {
- 					boolean loanApproval = borrowerService.loanPredictionAlgo(borrName,idProof);
- 					if(loanApproval) {
- 						System.out.println("Loan Approved");
- 					}else {
- 						System.out.println("Loan Not Approved");
- 					}
- 			}catch(Exception ex) {
- 				System.out.println("Error in loanPrediction method:"+ex);
- 			}
- 	}
+// 	public static void loanPrediction(BorrowerService borrowerService,String borrName,String idProof) {
+// 			try {
+// 					boolean loanApproval = borrowerService.loanPredictionAlgo(borrName,idProof);
+// 					if(loanApproval) {
+// 						System.out.println("Loan Approved");
+// 					}else {
+// 						System.out.println("Loan Not Approved");
+// 					}
+// 			}catch(Exception ex) {
+// 				System.out.println("Error in loanPrediction method:"+ex);
+// 			}
+// 	}
  	
  	//Loan Type
   		public static void addLoanType(AdminService admin, BorrowerService borrowerService) {
@@ -246,7 +270,8 @@ public class Function {
  									System.out.println("Please Enter Correct Loan Name");
  								}
  							}catch(Exception ex) {
- 								System.out.println("Error to add Loan Type:"+ex);
+ 								System.out.println("Error to add Loan Type");
+ 								logger.error("Error to add Loan Type:"+ex);
  							}
  							break;
  						case 3:
@@ -263,7 +288,8 @@ public class Function {
  									System.out.println("Loan Name Not Updated!!");
  								}
  						}catch(Exception ex) {
- 							System.out.println("Error to update Loan Type from Function:"+ex);
+ 							System.out.println("Error to update Loan Type from Function:");
+ 							logger.error("Error to update Loan Type from Function:"+ex);
  						}
  							break;
  						case 4:
@@ -272,10 +298,13 @@ public class Function {
  								System.out.println("Enter Loan Name to delete:");
  								String currName = sc.nextLine();
  								if(admin.deleteLoanName(currName)) {
- 									System.out.println("Loan Name Update");
+ 									System.out.println("Name Deleted Successfully...");
+ 								}else {
+ 									System.out.println("Name not Deleted...Sorry");
  								}
  							}catch(Exception ex) {
  								System.out.println("Error to Delete Loan Type from Function:"+ex);
+ 								logger.error("Error to Delete Loan Type from Function:"+ex);
  							}
  							break;
  						case 5:System.out.println("Out of Loan Type");
@@ -287,6 +316,7 @@ public class Function {
  					}
  			}catch(Exception ex) {
  				System.out.println("Exception in AddLoanType: "+ex);
+ 				logger.error("Exception in AddLoanType: "+ex);
  			}
  		}
 
@@ -461,50 +491,69 @@ public class Function {
 				: "Failed to delete borrower ");
 	}
 
-	public static void DataEvaluation(BorrowerService borrowerService) {
+	public static void DataEvaluation(BorrowerService borrowerService,String borrName,String idProof) {
 		// Add Data for Loan Evaluation
 		sc.nextLine();
-		System.out.println("Enter borrower name :");
-		String borrName = sc.nextLine();
-		System.out.println("Enter borrower id_proof:");
-		String idProof = sc.nextLine();
+		
+			int borrid=borrowerService.getBorrowerId(idProof);
+			
+			System.out.println("Enter income : ");
+			double income=sc.nextDouble();
+			sc.nextLine();
+			
+			System.out.println("Enter income source : ");
+			String income_source=sc.nextLine();
+			
+		    IncomeModel incomeModel = new IncomeModel(0, income, income_source);
+		    if (!borrowerService.addIncome(incomeModel, borrid)) {
+		        System.out.println("Unable to add income.");
+		        return;
+		    }
 
-		boolean borrPresent = borrowerService.isBorrowerPresent(borrName, idProof);
-		if (borrPresent) {
+		    System.out.println("Enter credit score: ");
+		    int creditScore = sc.nextInt();
 
-			// Accept income,income_source,credit_score,loan_type,loan_amt
+		    CreditModel creditModel = new CreditModel(0, creditScore);
+		    if (!borrowerService.addCredit(creditModel, borrid)) {
+		        System.out.println("Unable to add credit score.");
+		        return;
+		    }
 
-		} else {
-			System.out.println("Oops Details Not Found !!!!");
-			System.out.println("Do You Want To Register " + borrName + " Borrower Details (Yes/No) ?");
-			String msg = sc.nextLine();
+		    sc.nextLine();
+		    System.out.println("List of available loan types: ");
+		    borrowerService.getLoanType().ifPresentOrElse(
+		        loanList -> loanList.forEach(System.out::println),
+		        () -> System.out.println("No loan types available.")
+		    );
 
-			if (msg.equalsIgnoreCase("Yes")) {
-				try {
+		    System.out.println("Enter loan type: ");
+		    String loanType = sc.nextLine();
+		    int loanTypeId = borrowerService.getLoanTypeId(loanType);
 
-					System.out.println("Enter Date of birth in yyyy-MM-dd format ");
-					String dob = sc.nextLine();
-					SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-					java.util.Date utilDate = dateFormat.parse(dob);
-					Date sqlDate = new Date(utilDate.getTime());
+		    if (loanTypeId == -1) {
+		        System.out.println("Invalid loan type.");
+		        return;
+		    }
 
-					System.out.println("Enter Contact number ");
-					String phno = sc.nextLine();
+		    System.out.println("Enter required loan amount: ");
+		    double loanAmount = sc.nextDouble();
 
-					System.out.println("Enter Email ID ");
-					String em = sc.nextLine();
-
-					System.out.println(
-							borrowerService.isAddNewBorrower(new BorrowerModel(0, borrName, sqlDate, phno, em, idProof))
-									? "Borrower registered successfully...."
-									: " Registeration failed ");
-				} catch (Exception e) {
-					System.out.println("Invalid date format. Please enter the date in yyyy-MM-dd format.");
-				}
-			} else {
-				System.out.println("Thank You For Response");
-			}
-		}
+		    LoanModel loanModel = new LoanModel(0, loanType, loanAmount);
+		    if (borrowerService.addLoanAmt(loanModel, borrid, loanTypeId)) {
+		        System.out.println("Loan amount added successfully.");
+		    } else {
+		        System.out.println("Failed to add loan amount.");
+		    }
+		    
+		    System.out.println("Enter Ok for prediction : ");
+		    String msg=sc.nextLine();
+		    if(msg.equalsIgnoreCase("Ok"))
+		    {
+		    	
+		    }
+		    else {
+		    	System.out.println("Thanks for your response");
+		    }
 	}
 	
 	public static void getDetails(BorrowerService borrowerService,String borrName,String idno) {

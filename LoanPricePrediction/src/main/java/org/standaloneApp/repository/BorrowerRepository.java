@@ -5,6 +5,9 @@ import java.util.List;
 import java.util.Optional;
 
 import org.standaloneApp.model.BorrowerModel;
+import org.standaloneApp.model.CreditModel;
+import org.standaloneApp.model.IncomeModel;
+import org.standaloneApp.model.LoanModel;
 
 public interface BorrowerRepository {
 	
@@ -24,4 +27,9 @@ public interface BorrowerRepository {
 
 		public Optional<BorrowerModel> getBorrower(String currName,String idProof);//to get single borrower
 		
+		public Optional<List<String>> getLoanType();
+		public boolean addIncome(IncomeModel model,int borrId);
+		public boolean addCredit(CreditModel model,int borrId);
+		public int getLoanTypeId(String loanType);
+		public boolean addLoanAmt(LoanModel model,int borrId,int loanTypeId);
 }

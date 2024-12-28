@@ -1,15 +1,30 @@
 package org.standaloneApp.repository;
 
+import java.sql.Connection;
 import java.sql.Date;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import org.apache.log4j.Level;
+import org.apache.log4j.Logger;
+import org.apache.log4j.PropertyConfigurator;
 import org.standaloneApp.model.BorrowerModel;
+import org.standaloneApp.model.CreditModel;
+import org.standaloneApp.model.IncomeModel;
+import org.standaloneApp.model.LoanModel;
+
 
 public class BorrowerRepositoryImpl extends DBState implements BorrowerRepository {
 	List<BorrowerModel> borrowerList = null;
-
+	static Logger logger = Logger.getLogger(BorrowerRepositoryImpl.class);
+	static {
+		PropertyConfigurator.configure("C:\\Users\\Admin\\git\\Loan-Default-Prediction\\LoanPricePrediction\\src\\main\\resources\\application.properties");
+		logger.setLevel(Level.ALL);
+	}
 	@Override
 	public boolean isAddNewBorrower(BorrowerModel model) {
 		try {
@@ -22,8 +37,9 @@ public class BorrowerRepositoryImpl extends DBState implements BorrowerRepositor
 
 			int value = stmt.executeUpdate();
 			return value > 0 ? true : false;
-		} catch (Exception e) {
-			System.out.println("Error is " + e.getMessage());
+		} catch (Exception ex) {
+			System.out.println("Error is " + ex.getMessage());
+			logger.fatal("Exception in to AddNewBorrower :"+ex);
 			return false;
 		}
 	}
@@ -41,6 +57,7 @@ public class BorrowerRepositoryImpl extends DBState implements BorrowerRepositor
 				return -1;
 		} catch (Exception e) {
 			System.out.println("Error is " + e.getMessage());
+			logger.fatal("Exception in to GetBorrowerId :"+e);
 			return -1;
 		}
 	}
@@ -58,6 +75,8 @@ public class BorrowerRepositoryImpl extends DBState implements BorrowerRepositor
 				return false;
 		} catch (Exception e) {
 			System.out.println("Error is " + e.getMessage());
+			logger.fatal("Exception in to DeleteBorrowerById :"+e);
+			
 			return false;
 		}
 	}
@@ -83,6 +102,7 @@ public class BorrowerRepositoryImpl extends DBState implements BorrowerRepositor
 
 		} catch (Exception ex) {
 			System.out.println("Error is " + ex.getMessage());
+			logger.fatal("Exception in to GetAllBorrowers :"+ex);
 			return Optional.empty();
 		}
 	}
@@ -102,6 +122,7 @@ public class BorrowerRepositoryImpl extends DBState implements BorrowerRepositor
 			}
 		} catch (Exception ex) {
 			System.out.println("Error message in getBorrowerIdByName :" + ex);
+			logger.fatal("Exception in to GetBorrowerIdByNameIdProof :"+ex);
 			return -1;
 		}
 	}
@@ -122,6 +143,8 @@ public class BorrowerRepositoryImpl extends DBState implements BorrowerRepositor
 			}
 		}catch(Exception ex) {
 			System.out.println("Exception is: "+ex);
+			logger.fatal("Exception in to IsUpdatePhoneNumb :"+ex);
+			
 			return false;
 		}
 	}
@@ -143,6 +166,8 @@ public class BorrowerRepositoryImpl extends DBState implements BorrowerRepositor
 			}
 		}catch(Exception ex) {
 			System.out.println("Error message isUpdateEmailAdrs: "+ex);
+			logger.fatal("Exception in to IsUpdateEmailAdrs :"+ex);
+			
 			return false;
 		}
 	}
@@ -161,6 +186,7 @@ public class BorrowerRepositoryImpl extends DBState implements BorrowerRepositor
 				return false;
 			}
 		}catch(Exception ex) {
+			logger.fatal("Exception in to IsBorrowerPresent :"+ex);
 			return false;
 		}
 	}
@@ -181,6 +207,7 @@ public class BorrowerRepositoryImpl extends DBState implements BorrowerRepositor
 				}	
 		}catch(Exception ex) {
 			System.out.println("Error message is: "+ex);
+			logger.fatal("Exception in to IsUpdateNewName :"+ex);
 			return false;
 		}
 	}
@@ -201,6 +228,7 @@ public class BorrowerRepositoryImpl extends DBState implements BorrowerRepositor
 			}	
 		}catch(Exception ex) {
 			System.out.println("Error message is: "+ex);
+			logger.fatal("Exception in to Update New BirthDate :"+ex);
 			return false;
 		}
 	}
@@ -233,9 +261,98 @@ public class BorrowerRepositoryImpl extends DBState implements BorrowerRepositor
 		    } catch (Exception ex) {
 		        System.out.println("Error: " + ex.getMessage());
 		        // Return empty Optional if no record found or in case of an error
-			    return Optional.empty();
+		        logger.fatal("Exception in to Get Borrower :"+ex);
+		        return Optional.empty();
 		    }
 		 return Optional.empty();
 		   
+	}
+
+	@Override
+	public Optional<List<String>> getLoanType() {
+		try {
+			List<String> loanTypeList=new ArrayList<>();
+			stmt=conn.prepareStatement(Query.getLoanType);
+			rs=stmt.executeQuery();
+			while(rs.next()) {
+				loanTypeList.add(rs.getString(2));
+			}
+			if(loanTypeList.isEmpty())
+				throw new Exception("No List of loan type");
+			else
+				return Optional.ofNullable(loanTypeList);	
+		}
+		catch(Exception ex) {
+			System.out.println("Error: " + ex.getMessage());
+			logger.fatal("Exception in to Get Loan Type :"+ex);
+			
+			return Optional.empty();
+		}
+		
+	}
+	@Override
+	public boolean addIncome(IncomeModel model,int borrId) {
+		try {
+			stmt=conn.prepareStatement(Query.addIncome);
+			stmt.setInt(1,borrId);
+			stmt.setDouble(2,model.getIncome());
+			stmt.setString(3, model.getIncome_source());
+			int value = stmt.executeUpdate();
+			return value > 0 ? true : false;
+		}
+		catch(Exception ex) {
+			System.out.println("Error: " + ex.getMessage());
+			logger.fatal("Exception in to Add Income :"+ex);
+			return false;
+		}	
+	}
+	@Override
+	public boolean addCredit(CreditModel model, int borrId) {
+		try {
+			stmt=conn.prepareStatement(Query.addCredit);
+			stmt.setInt(1,borrId);
+			stmt.setInt(2,model.getCred_score());
+			int value = stmt.executeUpdate();
+			return value > 0 ? true : false;			
+		}
+		catch(Exception ex) {
+			System.out.println("Error: " + ex.getMessage());
+			logger.fatal("Exception in to Add Credit :"+ex);
+			return false;
+		}
+	}
+	@Override
+	public int getLoanTypeId(String loanType) {
+		try {
+			stmt=conn.prepareStatement(Query.getLoanTypeId);
+			stmt.setString(1,loanType);
+			rs = stmt.executeQuery();
+			if (rs.next()) {
+				return rs.getInt(1);
+			} else {
+				return -1;
+			}	
+		}
+		catch(Exception e) {
+			System.out.println("Error: " + e.getMessage());
+			logger.fatal("Exception in to Get Loan TypeId :"+e);
+			return -1;
+		}
+	}
+	@Override
+	public boolean addLoanAmt(LoanModel model,int borrId,int loanTypeId) {
+		try {
+			stmt=conn.prepareStatement(Query.addLoanAmt);
+			stmt.setInt(1,borrId);
+			stmt.setInt(2, loanTypeId);
+			stmt.setDouble(3,model.getLoan_amt());
+			int value = stmt.executeUpdate();
+			return value > 0 ? true : false;
+		}
+		catch(Exception e) {
+			System.out.println("Error: " + e.getMessage());
+			logger.fatal("Exception in to Add Loan Amount :"+e);
+			return false;
+		}
 	}
 }

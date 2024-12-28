@@ -4,6 +4,10 @@ import java.io.*;
 import java.sql.*;
 import java.util.Properties;
 
+import org.apache.log4j.Level;
+import org.apache.log4j.Logger;
+import org.apache.log4j.PropertyConfigurator;
+
 public class DBConfig {
 	protected static Connection conn;
 	protected static PreparedStatement stmt;
@@ -11,6 +15,13 @@ public class DBConfig {
 	protected static ResultSet rs;
 	private static DBConfig db;
 
+	private static Logger logger = Logger.getLogger(DBConfig.class);//logger object created
+	static {
+		PropertyConfigurator.configure("C:\\Users\\Admin\\git\\Loan-Default-Prediction\\LoanPricePrediction\\src\\main\\resources\\application.properties");
+		logger.setLevel(Level.DEBUG);
+	}
+	
+	
 	private DBConfig() {
 		try {
 			String path = new File("").getAbsolutePath();
@@ -27,18 +38,26 @@ public class DBConfig {
 			conn = DriverManager.getConnection(url, username, password);
 
 			if (conn != null)
+			{
 				System.out.println("Databases connected");
+				logger.info("Database Connected..LogMSG");
+			}
 			else
+			{
 				System.out.println("Database not connected");
-
+				logger.error("Database Not Connected..LogMSG");
+			}
+				
 		} catch (Exception e) {
 			System.out.println("Error is " + e.getMessage());
+			logger.error("Unable to Connect the Database");
 		}
 	}
 
 	public static DBConfig getInstance() {
 		if (db == null) {
 			db = new DBConfig();
+			logger.info("DBConfig Object created successfully.....");
 		}
 		return db;
 	}

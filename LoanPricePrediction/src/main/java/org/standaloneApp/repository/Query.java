@@ -24,4 +24,8 @@ public class Query {
 	public static String getLoanTypeId = " select loan_type_id from loan_type where type_name =?;";//to get loan id
 	public static String updateLoanTypeName = "update loan_type set type_name = ? where loan_type_id = ?;";//to update name via id
 	public static String deleteLoanTypeName = "delete from loan_type where loan_type_id = ? ;";//to delete laontype
+	
+	public static String addIncome="insert into income values(0,?,?,?);";
+	public static String addCredit="insert into credit_score values(0,?,?);";
+	public static String addLoanAmt="INSERT INTO loan_amt (loan_id, borrower_id, loan_type_id, amount) VALUES (0, ?, ?, ?);";	
 }
