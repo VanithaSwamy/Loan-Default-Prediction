@@ -1,5 +1,4 @@
 package org.standaloneApp.service;
-import org.standaloneApp.repository.*;
 import java.util.*;
 public interface AdminService {
 	boolean adminLogin(String name,String password);
@@ -8,5 +7,4 @@ public interface AdminService {
 	public boolean updateLoanName(String currName,String newName);//to update loan name
 	public boolean isAddNewLoanType(String newName);//to insert new loan type
 	public boolean deleteLoanName(String currName);
-	
 }

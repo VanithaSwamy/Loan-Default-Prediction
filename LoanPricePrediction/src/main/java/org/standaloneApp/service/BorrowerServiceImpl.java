@@ -5,6 +5,9 @@ import java.util.List;
 import java.util.Optional;
 
 import org.standaloneApp.model.BorrowerModel;
+import org.standaloneApp.model.CreditModel;
+import org.standaloneApp.model.IncomeModel;
+import org.standaloneApp.model.LoanModel;
 import org.standaloneApp.repository.BorrowerRepositoryImpl;
 import org.standaloneApp.repository.BorrowerRepository;
 
@@ -61,4 +64,30 @@ public class BorrowerServiceImpl implements BorrowerService {
 	public Optional<BorrowerModel> getBorrower(String currName, String idProof) {
 		return user.getBorrower(currName, idProof);
 	}
+
+	@Override
+	public Optional<List<String>> getLoanType() {
+		return user.getLoanType();
+	}
+
+	@Override
+	public boolean addIncome(IncomeModel model,int borrId) {
+		return user.addIncome(model, borrId);
+	}
+
+	@Override
+	public boolean addCredit(CreditModel model, int borrId) {
+		return user.addCredit(model, borrId);
+	}
+
+	@Override
+	public int getLoanTypeId(String loanType) {
+		return user.getLoanTypeId(loanType);
+	}
+
+	@Override
+	public boolean addLoanAmt(LoanModel model,int borrId,int loanTypeId) {
+		return user.addLoanAmt(model, borrId, loanTypeId);
+	}
+	
 }
