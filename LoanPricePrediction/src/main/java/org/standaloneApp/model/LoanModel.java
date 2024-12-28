@@ -7,11 +7,8 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-
-public class LoanEvaluationModel extends BorrowerModel{
-	private double income;
-	private String income_source;
-	private int cred_score;
+public class LoanModel extends CreditModel{
+	private int loan_id;
 	private String loan_type;
 	private double loan_amt;
 }

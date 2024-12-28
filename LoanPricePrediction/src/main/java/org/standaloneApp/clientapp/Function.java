@@ -5,8 +5,12 @@ import java.text.SimpleDateFormat;
 import java.util.List;
 import java.util.Optional;
 import java.util.Scanner;
+import java.util.*;
 
 import org.standaloneApp.model.BorrowerModel;
+import org.standaloneApp.model.CreditModel;
+import org.standaloneApp.model.IncomeModel;
+import org.standaloneApp.model.LoanModel;
 import org.standaloneApp.service.AdminService;
 import org.standaloneApp.service.BorrowerService;
 import org.standaloneApp.service.BorrowerServiceImpl;
@@ -14,7 +18,7 @@ import org.standaloneApp.service.BorrowerServiceImpl;
 public class Function {
 	private static Scanner sc = new Scanner(System.in);
 	private static Validations validate = new Validations();
-
+	
 	static void adminLogin(AdminService admin, BorrowerService borrowerService) {
 		System.out.println("---- Admin Login ----");
 		System.out.print("Enter admin username: ");
@@ -45,7 +49,7 @@ public class Function {
 					break;
 
 				case 3:
-					// add loan types
+					addLoanType(admin,borrowerService);
 					break;
 
 				case 4:
@@ -65,6 +69,93 @@ public class Function {
 			System.out.println("Invalid credentials. Please try again.");
 	}
 
+	public static void addLoanType(AdminService admin, BorrowerService borrowerService) {
+		try {
+			boolean run = true;
+				while(run){
+					sc.nextLine();
+					System.out.println("\nEnter below choice:"
+							+ "\n1:Display All Avl Loan Type"
+							+ "\n2:Add New Loan Type"
+							+ "\n3:Update Loan Type Name"
+							+ "\n4:Delete Loan Type"
+							+ "\n5:Exit");
+					int choice = sc.nextInt();
+					switch(choice) {
+					case 1:
+						Optional<Map<Integer,String>> loanTypes = admin.getLoanType();
+						System.out.println("Loan Types:");
+				        loanTypes.ifPresentOrElse(
+				            map -> map.forEach((key, value) -> {
+				            	 Optional<String> optionalValue = Optional.ofNullable(value);
+					                optionalValue.ifPresent(
+					                    loanName -> System.out.println("LoanType ID: " + key + ", LoanType Name: " + loanName)
+					                );
+					            }),
+					            () -> System.out.println("No loan types available.")
+					        );
+							
+							break;
+						case 2:
+							try {
+								sc.nextLine();
+								System.out.println("Enter New LoanType:");
+								String ltype = sc.nextLine();
+								boolean valName = validate.isNameValidate(ltype);
+								if(valName) {
+									if(admin.isAddNewLoanType(ltype)) 
+										System.out.println("Successfully...Added new Loan");
+									else 
+										System.out.println("Error to add new Loan");
+									
+								}else {
+									System.out.println("Please Enter Correct Loan Name");
+								}
+							}catch(Exception ex) {
+								System.out.println("Error to add Loan Type:"+ex);
+							}
+							break;
+						case 3:
+							try {
+								sc.nextLine();
+								System.out.println("Enter old Loan Name to update");
+								String oldName = sc.nextLine();
+								System.out.println("Enter new Name :");
+								String newName = sc.nextLine();
+								
+								if(admin.updateLoanName(oldName, newName)) {
+									System.out.println("Loan Name Update");
+								}else {
+									System.out.println("Loan Name Not Updated!!");
+								}
+						}catch(Exception ex) {
+							System.out.println("Error to update Loan Type from Function:"+ex);
+						}
+							break;
+						case 4:
+							try {
+								sc.nextLine();
+								System.out.println("Enter Loan Name to delete:");
+								String currName = sc.nextLine();
+								if(admin.deleteLoanName(currName)) {
+									System.out.println("Loan Name Update");
+								}
+							}catch(Exception ex) {
+								System.out.println("Error to Delete Loan Type from Function:"+ex);
+							}
+							break;
+						case 5:System.out.println("Out of Loan Type");
+							run = false;
+							break;
+						default:System.out.println("Wrong Choice");
+							break;
+						}	
+					}
+			}catch(Exception ex) {
+				System.out.println("Exception in AddLoanType: "+ex);
+			}
+		}
+				       
 	static void userLogin(AdminService admin, BorrowerService borrowerService) {
 
 		System.out.println("---- User Login ----");
@@ -99,7 +190,7 @@ public class Function {
 					break;
 
 				case 5:
-					Function.DataEvaluation(borrowerService);
+					Function.DataEvaluation(borrowerService,borrName,idno);
 					break;
 
 				case 6:
@@ -333,50 +424,69 @@ public class Function {
 				: "Failed to delete borrower ");
 	}
 
-	public static void DataEvaluation(BorrowerService borrowerService) {
+	public static void DataEvaluation(BorrowerService borrowerService,String borrName,String idProof) {
 		// Add Data for Loan Evaluation
-//		sc.nextLine();
-		System.out.println("Enter borrower name :");
-		String borrName = sc.nextLine();
-		System.out.println("Enter borrower id_proof:");
-		String idProof = sc.nextLine();
+		sc.nextLine();
+		
+			int borrid=borrowerService.getBorrowerId(idProof);
+			
+			System.out.println("Enter income : ");
+			double income=sc.nextDouble();
+			sc.nextLine();
+			
+			System.out.println("Enter income source : ");
+			String income_source=sc.nextLine();
+			
+		    IncomeModel incomeModel = new IncomeModel(0, income, income_source);
+		    if (!borrowerService.addIncome(incomeModel, borrid)) {
+		        System.out.println("Unable to add income.");
+		        return;
+		    }
 
-		boolean borrPresent = borrowerService.isBorrowerPresent(borrName, idProof);
-		if (borrPresent) {
+		    System.out.println("Enter credit score: ");
+		    int creditScore = sc.nextInt();
 
-			// Accept income,income_source,credit_score,loan_type,loan_amt
+		    CreditModel creditModel = new CreditModel(0, creditScore);
+		    if (!borrowerService.addCredit(creditModel, borrid)) {
+		        System.out.println("Unable to add credit score.");
+		        return;
+		    }
 
-		} else {
-			System.out.println("Oops Details Not Found !!!!");
-			System.out.println("Do You Want To Register " + borrName + " Borrower Details (Yes/No) ?");
-			String msg = sc.nextLine();
+		    sc.nextLine();
+		    System.out.println("List of available loan types: ");
+		    borrowerService.getLoanType().ifPresentOrElse(
+		        loanList -> loanList.forEach(System.out::println),
+		        () -> System.out.println("No loan types available.")
+		    );
 
-			if (msg.equalsIgnoreCase("Yes")) {
-				try {
+		    System.out.println("Enter loan type: ");
+		    String loanType = sc.nextLine();
+		    int loanTypeId = borrowerService.getLoanTypeId(loanType);
 
-					System.out.println("Enter Date of birth in yyyy-MM-dd format ");
-					String dob = sc.nextLine();
-					SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-					java.util.Date utilDate = dateFormat.parse(dob);
-					Date sqlDate = new Date(utilDate.getTime());
+		    if (loanTypeId == -1) {
+		        System.out.println("Invalid loan type.");
+		        return;
+		    }
 
-					System.out.println("Enter Contact number ");
-					String phno = sc.nextLine();
+		    System.out.println("Enter required loan amount: ");
+		    double loanAmount = sc.nextDouble();
 
-					System.out.println("Enter Email ID ");
-					String em = sc.nextLine();
-
-					System.out.println(
-							borrowerService.isAddNewBorrower(new BorrowerModel(0, borrName, sqlDate, phno, em, idProof))
-									? "Borrower registered successfully...."
-									: " Registeration failed ");
-				} catch (Exception e) {
-					System.out.println("Invalid date format. Please enter the date in yyyy-MM-dd format.");
-				}
-			} else {
-				System.out.println("Thank You For Response");
-			}
-		}
+		    LoanModel loanModel = new LoanModel(0, loanType, loanAmount);
+		    if (borrowerService.addLoanAmt(loanModel, borrid, loanTypeId)) {
+		        System.out.println("Loan amount added successfully.");
+		    } else {
+		        System.out.println("Failed to add loan amount.");
+		    }
+		    
+		    System.out.println("Enter Ok for prediction : ");
+		    String msg=sc.nextLine();
+		    if(msg.equalsIgnoreCase("Ok"))
+		    {
+		    	
+		    }
+		    else {
+		    	System.out.println("Thanks for your response");
+		    }
 	}
 	
 	public static void getDetails(BorrowerService borrowerService) {
@@ -393,4 +503,5 @@ public class Function {
 	        () -> System.out.println("Borrower not found")
 	    );
 	}
+
 }

@@ -6,6 +6,9 @@ import java.util.List;
 import java.util.Optional;
 
 import org.standaloneApp.model.BorrowerModel;
+import org.standaloneApp.model.CreditModel;
+import org.standaloneApp.model.IncomeModel;
+import org.standaloneApp.model.LoanModel;
 
 public class BorrowerRepositoryImpl extends DBState implements BorrowerRepository {
 	List<BorrowerModel> borrowerList = null;
@@ -73,8 +76,6 @@ public class BorrowerRepositoryImpl extends DBState implements BorrowerRepositor
 			rs = stmt.executeQuery();
 
 			while (rs.next()) {
-//				BorrowerModel model = new BorrowerModel(rs.getInt(1),rs.getString(2),rs.getDate(3),rs.getString(4),rs.getString(5),rs.getString(6));
-//				borrowerList.add(model);
 				borrowerList.add(new BorrowerModel(rs.getInt(1), rs.getString(2), rs.getDate(3), rs.getString(4),
 						rs.getString(5), rs.getString(6)));
 
@@ -223,12 +224,10 @@ public class BorrowerRepositoryImpl extends DBState implements BorrowerRepositor
 		            borrower.setBid(rs.getInt(1));
 		            borrower.setName(rs.getString(2));
 		            
-		            // Retrieve and set the date_of_birth
 		            java.sql.Date dobSql = rs.getDate(3);
 		            if (dobSql != null) {
 		                borrower.setDob(dobSql); 
 		            }
-//		            borrower.setDob(rs.getString(3));
 		            borrower.setPhno(rs.getString(4));
 		            borrower.setEmail(rs.getString(5));
 		            borrower.setId_proof(rs.getString(6));
@@ -238,8 +237,94 @@ public class BorrowerRepositoryImpl extends DBState implements BorrowerRepositor
 		    } catch (Exception ex) {
 		        System.out.println("Error: " + ex.getMessage());
 		    }
-		    // Return empty Optional if no record found or in case of an error
+		   
 		    return Optional.empty();
+	}
+
+	@Override
+	public Optional<List<String>> getLoanType() {
+		try {
+			List<String> loanTypeList=new ArrayList<>();
+			stmt=conn.prepareStatement(Query.getLoanType);
+			rs=stmt.executeQuery();
+			while(rs.next()) {
+				loanTypeList.add(rs.getString(2));
+			}
+			if(loanTypeList.isEmpty())
+				throw new Exception("No List of loan type");
+			else
+				return Optional.ofNullable(loanTypeList);	
+		}
+		catch(Exception ex) {
+			System.out.println("Error: " + ex.getMessage());
+			return Optional.empty();
+		}
+		
+	}
+
+	@Override
+	public boolean addIncome(IncomeModel model,int borrId) {
+		try {
+			stmt=conn.prepareStatement(Query.addIncome);
+			stmt.setInt(1,borrId);
+			stmt.setDouble(2,model.getIncome());
+			stmt.setString(3, model.getIncome_source());
+			int value = stmt.executeUpdate();
+			return value > 0 ? true : false;
+		}
+		catch(Exception ex) {
+			System.out.println("Error: " + ex.getMessage());
+			return false;
+		}	
+	}
+
+	@Override
+	public boolean addCredit(CreditModel model, int borrId) {
+		try {
+			stmt=conn.prepareStatement(Query.addCredit);
+			stmt.setInt(1,borrId);
+			stmt.setInt(2,model.getCred_score());
+			int value = stmt.executeUpdate();
+			return value > 0 ? true : false;			
+		}
+		catch(Exception ex) {
+			System.out.println("Error: " + ex.getMessage());
+			return false;
+		}
+	}
+
+	@Override
+	public int getLoanTypeId(String loanType) {
+		try {
+			stmt=conn.prepareStatement(Query.getLoanTypeId);
+			stmt.setString(1,loanType);
+			rs = stmt.executeQuery();
+			if (rs.next()) {
+				return rs.getInt(1);
+			} else {
+				return -1;
+			}	
+		}
+		catch(Exception e) {
+			System.out.println("Error: " + e.getMessage());
+			return -1;
+		}
+	}
+
+	@Override
+	public boolean addLoanAmt(LoanModel model,int borrId,int loanTypeId) {
+		try {
+			stmt=conn.prepareStatement(Query.addLoanAmt);
+			stmt.setInt(1,borrId);
+			stmt.setInt(2, loanTypeId);
+			stmt.setDouble(3,model.getLoan_amt());
+			int value = stmt.executeUpdate();
+			return value > 0 ? true : false;
+		}
+		catch(Exception e) {
+			System.out.println("Error: " + e.getMessage());
+			return false;
+		}
 	}
 
 }
