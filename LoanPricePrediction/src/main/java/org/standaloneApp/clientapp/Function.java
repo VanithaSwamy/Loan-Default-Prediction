@@ -18,6 +18,7 @@ public class Function {
 	private static Validations validate = new Validations();
 
 	static void adminLogin(AdminService admin, BorrowerService borrowerService) {
+		sc.nextLine();
 		System.out.println("---- Admin Login ----");
 		System.out.print("Enter admin username: ");
 		String adminUsername = sc.nextLine();
@@ -34,6 +35,7 @@ public class Function {
 				System.out.println("3: Add Loan Types");
 				System.out.println("4: Check Evaluation for Bulk Data");
 				System.out.println("5: Exit");
+				System.out.println("6: To apply Algorithm:");
 				System.out.print("Enter your choice: ");
 
 				int choice = sc.nextInt();
@@ -67,93 +69,7 @@ public class Function {
 			System.out.println("Invalid credentials. Please try again.");
 	}
 
-	//Loan Type
-	public static void addLoanType(AdminService admin, BorrowerService borrowerService) {
-		try {
-			boolean run = true;
-				while(run){
-					sc.nextLine();
-					System.out.println("\nEnter below choice:"
-							+ "\n1:Display All Avl Loan Type"
-							+ "\n2:Add New Loan Type"
-							+ "\n3:Update Loan Type Name"
-							+ "\n4:Delete Loan Type"
-							+ "\n5:Exit");
-					int choice = sc.nextInt();
-					switch(choice) {
-					case 1:
-						Optional<Map<Integer,String>> loanTypes = admin.getLoanType();
-						System.out.println("Loan Types:");
-				        loanTypes.ifPresentOrElse(
-				            map -> map.forEach((key, value) -> {
-				                Optional<String> optionalValue = Optional.ofNullable(value);
-				                optionalValue.ifPresent(
-				                    loanName -> System.out.println("LoanType ID: " + key + ", LoanType Name: " + loanName)
-				                );
-				            }),
-				            () -> System.out.println("No loan types available.")
-				        );
-						
-						break;
-					case 2:
-						try {
-							sc.nextLine();
-							System.out.println("Enter New LoanType:");
-							String ltype = sc.nextLine();
-							boolean valName = validate.isNameValidate(ltype);
-							if(valName) {
-								if(admin.isAddNewLoanType(ltype)) 
-									System.out.println("Successfully...Added new Loan");
-								else 
-									System.out.println("Error to add new Loan");
-								
-							}else {
-								System.out.println("Please Enter Correct Loan Name");
-							}
-						}catch(Exception ex) {
-							System.out.println("Error to add Loan Type:"+ex);
-						}
-						break;
-					case 3:
-						try {
-							sc.nextLine();
-							System.out.println("Enter old Loan Name to update");
-							String oldName = sc.nextLine();
-							System.out.println("Enter new Name :");
-							String newName = sc.nextLine();
-							
-							if(admin.updateLoanName(oldName, newName)) {
-								System.out.println("Loan Name Update");
-							}else {
-								System.out.println("Loan Name Not Updated!!");
-							}
-					}catch(Exception ex) {
-						System.out.println("Error to update Loan Type from Function:"+ex);
-					}
-						break;
-					case 4:
-						try {
-							sc.nextLine();
-							System.out.println("Enter Loan Name to delete:");
-							String currName = sc.nextLine();
-							if(admin.deleteLoanName(currName)) {
-								System.out.println("Loan Name Update");
-							}
-						}catch(Exception ex) {
-							System.out.println("Error to Delete Loan Type from Function:"+ex);
-						}
-						break;
-					case 5:System.out.println("Out of Loan Type");
-						run = false;
-						break;
-					default:System.out.println("Wrong Choice");
-						break;
-					}	
-				}
-		}catch(Exception ex) {
-			System.out.println("Exception in AddLoanType: "+ex);
-		}
-	}
+	//to apply algo
  	static void userLogin(AdminService admin, BorrowerService borrowerService) {
 		sc.nextLine();//
 		System.out.println("---- User Login ----");
@@ -171,8 +87,8 @@ public class Function {
 						"\n2: View Borrower Details "
 						+ "\n3: Update Borrower Details"
 						+ " \n4: Delete Borrower record "
-						+ "\n5: Add Data for Loan Evaluation"
-						+ " \n6: Exit \nEnter choice : ");
+						+ "\n5: Add Data for Loan Evaluation "
+						+ " \n6: Exit \\n7: To Predict loan \nEnter choice : ");
 				int ch = sc.nextInt();
 
 				switch (ch) {
@@ -200,7 +116,21 @@ public class Function {
 					System.out.println("Exiting the program...");
 					running = false; // Stop the loop
 					break;
-
+				case 7:
+					sc.nextLine();
+					System.out.println("Do you Want to Apply for Predection? Yes/No");
+					String decision = sc.nextLine();
+//					if(decision.equals("YES")) {
+//						Function.loanPrediction(borrowerService,borrName,idno);
+//					}else {
+//						System.out.println("No Prediction for current borrower......");
+//					}
+					 if (decision.equalsIgnoreCase("yes")) {
+				            // Process loan prediction
+				                } else {
+				            System.out.println("Prediction not requested.");
+				        }
+					break;
 				default:
 					System.out.println("Invalid choice ....");
 					break;
@@ -259,6 +189,106 @@ public class Function {
 		}
 
 	}
+ 	public static void loanPrediction(BorrowerService borrowerService,String borrName,String idProof) {
+ 			try {
+ 					boolean loanApproval = borrowerService.loanPredictionAlgo(borrName,idProof);
+ 					if(loanApproval) {
+ 						System.out.println("Loan Approved");
+ 					}else {
+ 						System.out.println("Loan Not Approved");
+ 					}
+ 			}catch(Exception ex) {
+ 				System.out.println("Error in loanPrediction method:"+ex);
+ 			}
+ 	}
+ 	
+ 	//Loan Type
+  		public static void addLoanType(AdminService admin, BorrowerService borrowerService) {
+ 			try {
+ 				boolean run = true;
+ 					while(run){
+ 						sc.nextLine();
+ 						System.out.println("\nEnter below choice:"
+ 								+ "\n1:Display All Avl Loan Type"
+ 								+ "\n2:Add New Loan Type"
+ 								+ "\n3:Update Loan Type Name"
+ 								+ "\n4:Delete Loan Type"
+ 								+ "\n5:Exit");
+ 						int choice = sc.nextInt();
+ 						switch(choice) {
+ 						case 1:
+ 							Optional<Map<Integer,String>> loanTypes = admin.getLoanType();
+ 							System.out.println("Loan Types:");
+ 					        loanTypes.ifPresentOrElse(
+ 					            map -> map.forEach((key, value) -> {
+ 					                Optional<String> optionalValue = Optional.ofNullable(value);
+ 					                optionalValue.ifPresent(
+ 					                    loanName -> System.out.println("LoanType ID: " + key + ", LoanType Name: " + loanName)
+ 					                );
+ 					            }),
+ 					            () -> System.out.println("No loan types available.")
+ 					        );
+ 							
+ 							break;
+ 						case 2:
+ 							try {
+ 								sc.nextLine();
+ 								System.out.println("Enter New LoanType:");
+ 								String ltype = sc.nextLine();
+ 								boolean valName = validate.isNameValidate(ltype);
+ 								if(valName) {
+ 									if(admin.isAddNewLoanType(ltype)) 
+ 										System.out.println("Successfully...Added new Loan");
+ 									else 
+ 										System.out.println("Error to add new Loan");
+ 									
+ 								}else {
+ 									System.out.println("Please Enter Correct Loan Name");
+ 								}
+ 							}catch(Exception ex) {
+ 								System.out.println("Error to add Loan Type:"+ex);
+ 							}
+ 							break;
+ 						case 3:
+ 							try {
+ 								sc.nextLine();
+ 								System.out.println("Enter old Loan Name to update");
+ 								String oldName = sc.nextLine();
+ 								System.out.println("Enter new Name :");
+ 								String newName = sc.nextLine();
+ 								
+ 								if(admin.updateLoanName(oldName, newName)) {
+ 									System.out.println("Loan Name Update");
+ 								}else {
+ 									System.out.println("Loan Name Not Updated!!");
+ 								}
+ 						}catch(Exception ex) {
+ 							System.out.println("Error to update Loan Type from Function:"+ex);
+ 						}
+ 							break;
+ 						case 4:
+ 							try {
+ 								sc.nextLine();
+ 								System.out.println("Enter Loan Name to delete:");
+ 								String currName = sc.nextLine();
+ 								if(admin.deleteLoanName(currName)) {
+ 									System.out.println("Loan Name Update");
+ 								}
+ 							}catch(Exception ex) {
+ 								System.out.println("Error to Delete Loan Type from Function:"+ex);
+ 							}
+ 							break;
+ 						case 5:System.out.println("Out of Loan Type");
+ 							run = false;
+ 							break;
+ 						default:System.out.println("Wrong Choice");
+ 							break;
+ 						}	
+ 					}
+ 			}catch(Exception ex) {
+ 				System.out.println("Exception in AddLoanType: "+ex);
+ 			}
+ 		}
 
 	public static void addBorrower(BorrowerService borrowerService) {
 		try {
@@ -483,6 +513,7 @@ public class Function {
 //		String currBName1 = sc.nextLine();
 //		System.out.println("Enter borrower id_proof:");
 //		String idProof1 = sc.nextLine();
+		
 		String currBName1 = borrName;
 		String idProof1 = idno;
 		
