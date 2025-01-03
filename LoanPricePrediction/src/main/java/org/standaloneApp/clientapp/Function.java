@@ -169,7 +169,7 @@ public class Function {
 
 			do {
 				System.out.println(
-						"1: Add Borrower details \n2: View Borrower Details \n3: Update Borrower Details \n4: Delete Borrower record \n5: Add Data for Loan Evaluation \n6: Exit \nEnter choice : ");
+						"1: Add Borrower details \n2: View Borrower Details \n3: Update Borrower Details \n4: Add Data for Loan Evaluation \n5: Exit \nEnter choice : ");
 				int ch = sc.nextInt();
 
 				switch (ch) {
@@ -186,14 +186,10 @@ public class Function {
 					break;
 
 				case 4:
-					Function.deleteBorrower(borrowerService);
-					break;
-
-				case 5:
 					Function.DataEvaluation(borrowerService,borrName,idno);
 					break;
 
-				case 6:
+				case 5:
 					System.out.println("Exiting the program...");
 					running = false; // Stop the loop
 					break;
