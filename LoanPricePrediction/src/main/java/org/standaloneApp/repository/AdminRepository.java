@@ -9,4 +9,5 @@ public interface AdminRepository {
 	public int getLoanId(String oldName);//to get loan id via loan name
 	public boolean updateLoanName(String currName,String newName);//to update loan name
 	public boolean deleteLoanName(String currName);//to delete loan name record
+
 }

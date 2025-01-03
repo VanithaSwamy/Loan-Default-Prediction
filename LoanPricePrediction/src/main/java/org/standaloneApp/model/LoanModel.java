@@ -10,5 +10,6 @@ import lombok.NoArgsConstructor;
 public class LoanModel extends CreditModel{
 	private int loan_id;
 	private String loan_type;
-	private double loan_amt;
+	private float loan_amt;
 }
+

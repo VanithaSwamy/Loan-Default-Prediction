@@ -9,6 +9,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class IncomeModel extends BorrowerModel{
 	private int income_id;
-	private double income;
+	private float income;
 	private String income_source;
 }
+

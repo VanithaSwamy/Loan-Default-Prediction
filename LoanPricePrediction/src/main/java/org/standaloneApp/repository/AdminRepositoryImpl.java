@@ -2,7 +2,6 @@ package org.standaloneApp.repository;
 
 import java.util.*;
 
-
 public class AdminRepositoryImpl extends DBState implements AdminRepository{
 
 	@Override
@@ -114,8 +113,6 @@ public class AdminRepositoryImpl extends DBState implements AdminRepository{
 			return false;
 		}
 
-	}
-	
-
-	
+	}	
 }
+

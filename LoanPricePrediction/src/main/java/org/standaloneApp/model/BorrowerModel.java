@@ -18,3 +18,5 @@ public class BorrowerModel {
 	private String email;
 	private String id_proof;
 }
+
+//

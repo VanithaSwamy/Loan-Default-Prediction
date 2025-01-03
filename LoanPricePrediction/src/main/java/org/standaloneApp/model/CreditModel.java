@@ -11,3 +11,4 @@ public class CreditModel extends IncomeModel {
 	private int cred_id;
 	private int cred_score;
 }
+
