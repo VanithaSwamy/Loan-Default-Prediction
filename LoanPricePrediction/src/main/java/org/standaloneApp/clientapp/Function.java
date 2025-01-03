@@ -7,10 +7,14 @@ import java.util.Optional;
 import java.util.Scanner;
 import java.util.*;
 
+import org.apache.log4j.Level;
+import org.apache.log4j.Logger;
+import org.apache.log4j.PropertyConfigurator;
 import org.standaloneApp.model.BorrowerModel;
 import org.standaloneApp.model.CreditModel;
 import org.standaloneApp.model.IncomeModel;
 import org.standaloneApp.model.LoanModel;
+import org.standaloneApp.repository.BorrowerRepositoryImpl;
 import org.standaloneApp.service.AdminService;
 import org.standaloneApp.service.BorrowerService;
 import org.standaloneApp.service.BorrowerServiceImpl;
@@ -18,7 +22,11 @@ import org.standaloneApp.service.BorrowerServiceImpl;
 public class Function {
 	private static Scanner sc = new Scanner(System.in);
 	private static Validations validate = new Validations();
-	
+	private static Logger logger = Logger.getLogger(BorrowerRepositoryImpl.class);
+	static {
+		PropertyConfigurator.configure("C:\\Users\\Admin\\git\\Loan-Default-Prediction\\LoanPricePrediction\\src\\main\\resources\\application.properties");
+		logger.setLevel(Level.ALL);
+	}
 	static void adminLogin(AdminService admin, BorrowerService borrowerService) {
 		System.out.println("---- Admin Login ----");
 		System.out.print("Enter admin username: ");
@@ -57,6 +65,7 @@ public class Function {
 					break;
 
 				case 5:
+					logger.info("Admin LoginOut from Application");
 					System.out.println("Exiting the application. Goodbye!");
 					running = false; // Exit the loop
 					break;
@@ -70,24 +79,24 @@ public class Function {
 	}
 
 	public static void addLoanType(AdminService admin, BorrowerService borrowerService) {
-		try {
-			boolean run = true;
-				while(run){
-					sc.nextLine();
-					System.out.println("\nEnter below choice:"
-							+ "\n1:Display All Avl Loan Type"
-							+ "\n2:Add New Loan Type"
-							+ "\n3:Update Loan Type Name"
-							+ "\n4:Delete Loan Type"
-							+ "\n5:Exit");
-					int choice = sc.nextInt();
-					switch(choice) {
-					case 1:
-						Optional<Map<Integer,String>> loanTypes = admin.getLoanType();
-						System.out.println("Loan Types:");
-				        loanTypes.ifPresentOrElse(
-				            map -> map.forEach((key, value) -> {
-				            	 Optional<String> optionalValue = Optional.ofNullable(value);
+			try {
+				boolean run = true;
+					while(run){
+						sc.nextLine();
+						System.out.println("\nEnter below choice:"
+								+ "\n1:Display All Avl Loan Type"
+								+ "\n2:Add New Loan Type"
+								+ "\n3:Update Loan Type Name"
+								+ "\n4:Delete Loan Type"
+								+ "\n5:Exit");
+						int choice = sc.nextInt();
+						switch(choice) {
+						case 1:
+							Optional<Map<Integer,String>> loanTypes = admin.getLoanType();
+							System.out.println("Loan Types:");
+					        loanTypes.ifPresentOrElse(
+					            map -> map.forEach((key, value) -> {
+					                Optional<String> optionalValue = Optional.ofNullable(value);
 					                optionalValue.ifPresent(
 					                    loanName -> System.out.println("LoanType ID: " + key + ", LoanType Name: " + loanName)
 					                );
@@ -112,7 +121,8 @@ public class Function {
 									System.out.println("Please Enter Correct Loan Name");
 								}
 							}catch(Exception ex) {
-								System.out.println("Error to add Loan Type:"+ex);
+								System.out.println("Error to add Loan Type");
+								logger.error("Error to add Loan Type:"+ex);
 							}
 							break;
 						case 3:
@@ -129,7 +139,8 @@ public class Function {
 									System.out.println("Loan Name Not Updated!!");
 								}
 						}catch(Exception ex) {
-							System.out.println("Error to update Loan Type from Function:"+ex);
+							System.out.println("Error to update Loan Type from Function:");
+							logger.error("Error to update Loan Type from Function:"+ex);
 						}
 							break;
 						case 4:
@@ -138,10 +149,13 @@ public class Function {
 								System.out.println("Enter Loan Name to delete:");
 								String currName = sc.nextLine();
 								if(admin.deleteLoanName(currName)) {
-									System.out.println("Loan Name Update");
+									System.out.println("Name Deleted Successfully...");
+								}else {
+									System.out.println("Name not Deleted...Sorry");
 								}
 							}catch(Exception ex) {
 								System.out.println("Error to Delete Loan Type from Function:"+ex);
+								logger.error("Error to Delete Loan Type from Function:"+ex);
 							}
 							break;
 						case 5:System.out.println("Out of Loan Type");
@@ -153,6 +167,7 @@ public class Function {
 					}
 			}catch(Exception ex) {
 				System.out.println("Exception in AddLoanType: "+ex);
+				logger.error("Exception in AddLoanType: "+ex);
 			}
 		}
 				       
@@ -168,6 +183,7 @@ public class Function {
 			boolean running = true;
 
 			do {
+				logger.info("User Login into Application");
 				System.out.println(
 						"1: Add Borrower details \n2: View Borrower Details \n3: Update Borrower Details \n4: Add Data for Loan Evaluation \n5: Exit \nEnter choice : ");
 				int ch = sc.nextInt();
@@ -190,6 +206,7 @@ public class Function {
 					break;
 
 				case 5:
+					logger.info("User LoginOut from Application");
 					System.out.println("Exiting the program...");
 					running = false; // Stop the loop
 					break;
@@ -231,19 +248,26 @@ public class Function {
 										: " Registeration failed ");
 					} else if (valName == false) {
 						System.out.println("Enter valid borrower name");
+						logger.info("User enter wrong Name :"+valName);
 					} else if (valPhno == false) {
 						System.out.println("Enter valid phone number");
+						logger.info("User enter wrong Phone Number: "+valPhno);
 					} else if (valEm == false) {
 						System.out.println("Enter valid email Id");
+						logger.info("User enter wrong Email Address: "+valEm);
 					} else if (valProof ==  false) {
 						System.out.println("Enter valid Id Proof ");
+						logger.info("User enter wrong ID Proof: "+valProof);
 					} else if (valDate == false){
 						System.out.println("Enter valid Date  ");
+						logger.info("User enter wrong Date:"+valDate);
 					}
 					else {
 						System.out.println("Invalid data entered...");
+						logger.info("Invalid data entered...");
 					}
 				} catch (Exception e) {
+					logger.info("Unable to Register New Borrower in Application "+e);
 					System.out.println("Invalid date format. Please enter the date in yyyy-MM-dd format.");
 				}
 			} else {

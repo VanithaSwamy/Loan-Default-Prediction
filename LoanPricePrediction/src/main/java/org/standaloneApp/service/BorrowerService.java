@@ -8,6 +8,7 @@ import org.standaloneApp.model.LoanModel;
 import java.sql.Date;
 import java.util.List;
 import java.util.Optional;
+
 public interface BorrowerService{
 
 	public boolean isAddNewBorrower(BorrowerModel model);
@@ -31,3 +32,4 @@ public interface BorrowerService{
 	public int getLoanTypeId(String loanType);
 	public boolean addLoanAmt(LoanModel model,int borrId,int loanTypeId);
 }
+

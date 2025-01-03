@@ -20,7 +20,6 @@ public interface BorrowerRepository {
 	public boolean isUpdatePhoneNumb(String currBName,String idProof,String newBPhoneNumb);//to update phone number of borrower thechaitu
 	public boolean isUpdateEmailAdrs(String currBName,String idProof,String newEmailAdrs); //thechaitu
 	
-	//to check borrower present or not
 	public boolean isBorrowerPresent(String currBName,String idProof);
 	public boolean isUpdateNewName(String currBName,String idProof,String newName); //to update new name
 	public boolean isUpdateNewBDate(String currBName,String idProof,Date bdate);//to update new birthdate
@@ -35,3 +34,4 @@ public interface BorrowerRepository {
 	
 	public boolean addLoanAmt(LoanModel model,int borrId,int loanTypeId);
 }
+

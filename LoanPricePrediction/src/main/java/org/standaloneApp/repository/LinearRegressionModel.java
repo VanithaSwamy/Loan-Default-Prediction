@@ -3,19 +3,30 @@ package org.standaloneApp.repository;
 import java.util.ArrayList;
 import java.util.List;
 
+import LinearRegressionModel.GetMeanOf_X_RepositoryImpl;
+import LinearRegressionModel.GetMeanOf_Y_RepositoryImpl;
+
 public class LinearRegressionModel extends DBState{
 	public static void main(String x[]) {
-		LinearRegressionModel lmodel=new LinearRegressionModel();
-		System.out.println("Linear Regression Model to predict for Loan Amount");
-		float loanamt=30000;
+//		LinearRegressionModel lmodel=new LinearRegressionModel();
+//		System.out.println("Linear Regression Model to predict for Loan Amount");
+//		float loanamt=30000;
+//		
+//		try {
+//			float y = (lmodel.getMValue() * loanamt) + lmodel.getBValue();
+//			System.out.println("The value of y "+y);
+//		}
+//		catch(Exception e) {
+//			e.printStackTrace();
+//		}	
+		GetMeanOf_X_RepositoryImpl MX=new GetMeanOf_X_RepositoryImpl();
+		GetMeanOf_Y_RepositoryImpl MY=new GetMeanOf_Y_RepositoryImpl();
 		
-		try {
-			float y = (lmodel.getMValue() * loanamt) + lmodel.getBValue();
-			System.out.println("The value of y "+y);
-		}
-		catch(Exception e) {
-			e.printStackTrace();
-		}	
+		System.out.println("The Mean Of Income is "+MX.getMeanOfIncome());
+		System.out.println("The Mean of Loan Amt is "+MX.getMeanOfLoanAmt());
+		System.out.println("The Mean of Credit Score is "+MX.getMeanOfCreditScore());
+		System.out.println("The Mean of Age is "+MX.getMeanOfAge());
+		System.out.println("The mean of status is "+MY.getMeanOfDefault());
 	}
 	public float getMeanLoanAmt() {
 		try {
