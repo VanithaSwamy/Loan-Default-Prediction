@@ -14,6 +14,7 @@ public interface BorrowerService{
 	public boolean isAddNewBorrower(BorrowerModel model);
 	public int getBorrowerId(String idproof);
 	public boolean deleteBorrowerById(String idproof);
+	public int getAgeById(String idproof);
 	
 	public Optional<List<BorrowerModel>> getAllBorrowers();
 	public boolean isUpdatePhoneNumb(String currBName,String idProof,String newBPhoneNumb);
@@ -31,5 +32,7 @@ public interface BorrowerService{
 	public boolean addCredit(CreditModel model,int borrId);
 	public int getLoanTypeId(String loanType);
 	public boolean addLoanAmt(LoanModel model,int borrId,int loanTypeId);
+	
+	public boolean addBorrowerLoanJoin(int borrId,int status,String reason);
 }
 

@@ -293,7 +293,7 @@ public class BorrowerRepositoryImpl extends DBState implements BorrowerRepositor
 		try {
 			stmt=conn.prepareStatement(Query.addIncome);
 			stmt.setInt(1,borrId);
-			stmt.setDouble(2,model.getIncome());
+			stmt.setFloat(2,model.getIncome());
 			stmt.setString(3, model.getIncome_source());
 			int value = stmt.executeUpdate();
 			return value > 0 ? true : false;
@@ -343,13 +343,48 @@ public class BorrowerRepositoryImpl extends DBState implements BorrowerRepositor
 			stmt=conn.prepareStatement(Query.addLoanAmt);
 			stmt.setInt(1,borrId);
 			stmt.setInt(2, loanTypeId);
-			stmt.setDouble(3,model.getLoan_amt());
+			stmt.setFloat(3,model.getLoan_amt());
 			int value = stmt.executeUpdate();
 			return value > 0 ? true : false;
 		}
 		catch(Exception e) {
 			System.out.println("Error: " + e.getMessage());
 			logger.fatal("Exception in to Add Loan Amount :"+e);
+			return false;
+		}
+	}
+
+	@Override
+	public int getAgeById(String idproof) {
+		try {
+			int id=this.getBorrowerId(idproof);
+			stmt = conn.prepareStatement(Query.getAge);
+			stmt.setInt(1, id);
+			rs = stmt.executeQuery();
+
+			if (rs.next())
+				return rs.getInt(1);
+			else
+				return -1;
+		} catch (Exception e) {
+			System.out.println("Error is " + e.getMessage());
+			logger.fatal("Exception in to Get Age :"+e);
+			return -1;
+		}
+	}
+
+	@Override
+	public boolean addBorrowerLoanJoin(int borrId, int status, String reason) {
+		try {
+			stmt = conn.prepareStatement(Query.addBorrowerLoanJoin);
+			stmt.setInt(1, borrId);
+			stmt.setInt(2, status);
+			stmt.setString(3, reason);
+			int value = stmt.executeUpdate();
+			return value > 0 ? true : false;
+			
+		}catch(Exception ex) {
+			logger.fatal("Exception unable to add :"+ex);
 			return false;
 		}
 	}

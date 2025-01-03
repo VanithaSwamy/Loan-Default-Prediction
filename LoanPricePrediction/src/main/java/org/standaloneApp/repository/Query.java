@@ -9,13 +9,12 @@ public class Query {
 	public static String getBorrowerRecord ="select * from borrower";
 	public static String getBorrwerIdByNameIDProof ="select borrower_id from borrower where name=? && id_proof =?";
 	public static String setBorrwerEmailById = "update borrower set email =? where borrower_id=?;";
-	
+	public static String getAge="SELECT TIMESTAMPDIFF(YEAR,dob, CURDATE()) as age from borrower where borrower_id=?;";
 	public static String updateBorrowerNewName1 = "update borrower set name =? where borrower_id = ?;";
 	public static String updateBorrowerBdate ="update borrower set dob = ? where borrower_id = ?;";
 	public static String updateBorrowerContNumb = "update borrower set contact_number = ? where borrower_id=?;";
 	
 	public static String getAdmincredentials="select * from admin where name=? and password=?;";
-	
 	public static String getBorrowerDetail = "Select * from borrower where name = ? AND id_proof=?";
 	
 	//loan type
@@ -29,4 +28,5 @@ public class Query {
 	public static String addCredit="insert into credit_score values(0,?,?);";
 	public static String addLoanAmt="INSERT INTO loan_amt (loan_id, borrower_id, loan_type_id, amount) VALUES (0, ?, ?, ?);";	
 	
+	public static String addBorrowerLoanJoin="call addBorrowerLoanJoin(?,?,?)";
 }

@@ -5,14 +5,14 @@ import org.standaloneApp.repository.DBState;
 public class GetMeanOf_X_RepositoryImpl extends DBState implements GetMeanOf_X_Repository {
 
 	@Override
-	public double getMeanOfIncome() {
+	public float getMeanOfIncome() {
 		try {
 			//Find average of single Borrower
 			stmt=conn.prepareStatement(QueryLR.AvgIncome);
 			rs=stmt.executeQuery();
 			if(rs.next())
 			{
-				return rs.getDouble(1);
+				return rs.getFloat(1);
 			}
 			else {
 				return 0;
@@ -25,14 +25,14 @@ public class GetMeanOf_X_RepositoryImpl extends DBState implements GetMeanOf_X_R
 	}
 
 	@Override
-	public double getMeanOfLoanAmt() {
+	public float getMeanOfLoanAmt() {
 		try {
 			//Find average of single Borrower
 			stmt=conn.prepareStatement(QueryLR.AvgLoanAmt);
 			rs=stmt.executeQuery();
 			if(rs.next())
 			{
-				return rs.getDouble(1);
+				return rs.getFloat(1);
 			}
 			else {
 				return 0;

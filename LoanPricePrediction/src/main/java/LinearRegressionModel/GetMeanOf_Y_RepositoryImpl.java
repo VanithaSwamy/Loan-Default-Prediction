@@ -5,7 +5,7 @@ import org.standaloneApp.repository.DBState;
 public class GetMeanOf_Y_RepositoryImpl extends DBState implements GetMeanOf_Y_Repository {
 
 	@Override
-	public float getMeanOfDefault() {
+	public float getMeanOfStatus() {
 		try {
 			//Find average of single Borrower
 			stmt=conn.prepareStatement(QueryLR.AvgStatus);

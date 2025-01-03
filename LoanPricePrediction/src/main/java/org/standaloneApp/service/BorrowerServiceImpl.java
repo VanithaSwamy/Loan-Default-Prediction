@@ -89,6 +89,16 @@ public class BorrowerServiceImpl implements BorrowerService {
 	public boolean addLoanAmt(LoanModel model,int borrId,int loanTypeId) {
 		return user.addLoanAmt(model, borrId, loanTypeId);
 	}
+
+	@Override
+	public int getAgeById(String idproof) {
+		return user.getAgeById(idproof);
+	}
+
+	@Override
+	public boolean addBorrowerLoanJoin(int borrId, int status, String reason) {
+		return user.addBorrowerLoanJoin(borrId, status, reason);
+	}
 	
 }
 

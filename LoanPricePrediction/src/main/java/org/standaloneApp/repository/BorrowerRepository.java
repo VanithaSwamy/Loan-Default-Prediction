@@ -13,7 +13,8 @@ public interface BorrowerRepository {
 	
 	public boolean isAddNewBorrower(BorrowerModel model);
 	public int getBorrowerId(String idproof);
-	public boolean deleteBorrowerById(String idproof); 
+	public boolean deleteBorrowerById(String idproof);
+	public int getAgeById(String idproof);
 	
 	public Optional<List<BorrowerModel>> getAllBorrowers(); //to list all borrower thechaitu
 	public int getBorrowerIdByNameIdProof(String currBName,String idProof); //to get borrower id thechaitu
@@ -33,5 +34,6 @@ public interface BorrowerRepository {
 	public int getLoanTypeId(String loanType);
 	
 	public boolean addLoanAmt(LoanModel model,int borrId,int loanTypeId);
+	public boolean addBorrowerLoanJoin(int borrId,int status,String reason);
 }
 
