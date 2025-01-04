@@ -29,4 +29,8 @@ public class Query {
 	public static String addLoanAmt="INSERT INTO loan_amt (loan_id, borrower_id, loan_type_id, amount) VALUES (0, ?, ?, ?);";	
 	
 	public static String addBorrowerLoanJoin="call addBorrowerLoanJoin(?,?,?)";
+	
+	public static String getListApproved="select blj.borrower_id as 'Borrower Id',b.name as 'Borrower Name',li.amount 'Loan Amount',cd.score as 'Credit Score',ii.annual_income as 'Annual Income' from borrowerloanjoin blj join borrower b on b.borrower_id=blj.borrower_id join loan_amt as li on li.loan_id=blj.loan_id JOIN credit_score as cd on cd.cred_id=blj.cred_id JOIN income as ii on ii.income_id=blj.income_id where blj.status=1;";
+	
+	public static String getListRejected="select blj.borrower_id as 'Borrower Id',b.name as 'Borrower Name',li.amount 'Loan Amount',cd.score as 'Credit Score',ii.annual_income as 'Annual Income' from borrowerloanjoin blj join borrower b on b.borrower_id=blj.borrower_id join loan_amt as li on li.loan_id=blj.loan_id JOIN credit_score as cd on cd.cred_id=blj.cred_id JOIN income as ii on ii.income_id=blj.income_id where blj.status=0;";
 }

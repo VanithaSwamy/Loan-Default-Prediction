@@ -49,7 +49,8 @@ public class Function {
 				System.out.println("1: View All Borrowers");
 				System.out.println("2: Delete Borrower");
 				System.out.println("3: Add Loan Types");
-				System.out.println("4: Exit");
+				System.out.println("4: To show Reports");
+				System.out.println("5: Exit");
 				System.out.print("Enter your choice: ");
 
 				int choice = sc.nextInt();
@@ -67,6 +68,9 @@ public class Function {
 					break;
 
 				case 4:
+					reports(admin,borrowerService);
+					break;
+				case 5:
 					logger.info("Admin LoginOut from Application");
 					System.out.println("Exiting the application. Goodbye!");
 					running = false; // Exit the loop
@@ -486,7 +490,6 @@ public class Function {
 			System.out.println("Unable to add Loan Amount");
 			return;
 		}
-		
 		sc.nextLine();
 		System.out.println("Enter Ok for prediction : ");
 		String msg = sc.nextLine();
@@ -568,4 +571,64 @@ public class Function {
 				() -> System.out.println("Borrower not found"));
 	}
 
+	public  static void reports(AdminService admin,BorrowerService borrowerService) {
+		sc.nextLine();
+		boolean run = true;
+		while(run){
+			System.out.println("\n1:To Display Approval Loan Records"
+					+ "\n2: Rejected Loan Records"
+					+ "\n3:To Exit"
+					+ "\nEnter your Choice:");
+			int choice = sc.nextInt();
+			switch(choice) {
+			case 1: 
+			        List<LoanModel> borr = admin.loanApprovalRecords();
+			        if(!borr.equals(null)) {
+			        	System.out.printf("+-------------+---------------+-------------+--------------+---------------+%n");
+			            System.out.printf("| Borrower Id | Borrower Name | Loan Amount | Credit Score | Annual Income |%n");
+			            System.out.printf("+-------------+---------------+-------------+--------------+---------------+%n");
+
+			            for(LoanModel borrower : borr) {
+			                System.out.printf("| %-11d | %-13s | %-11.2f | %-12d | %-13.2f |%n",
+			                        borrower.getBid(), borrower.getName(), borrower.getLoan_amt(),
+			                        borrower.getCred_score(), borrower.getIncome());
+			            }
+
+			            System.out.printf("+-------------+---------------+-------------+--------------+---------------+%n");
+			      
+			        }else {
+			        	System.out.print("NO Records Present...");
+			        }
+			        break;
+			case 2:
+				borr = admin.loanRejectedRecords();
+	        if(!borr.equals(null)) {
+	        	System.out.printf("+-------------+---------------+-------------+--------------+---------------+%n");
+	            System.out.printf("| Borrower Id | Borrower Name | Loan Amount | Credit Score | Annual Income |%n");
+	            System.out.printf("+-------------+---------------+-------------+--------------+---------------+%n");
+
+	            for(LoanModel borrower : borr) {
+	                System.out.printf("| %-11d | %-13s | %-11.2f | %-12d | %-13.2f |%n",
+	                        borrower.getBid(), borrower.getName(), borrower.getLoan_amt(),
+	                        borrower.getCred_score(), borrower.getIncome());
+	            }
+
+	            System.out.printf("+-------------+---------------+-------------+--------------+---------------+%n");
+	      
+	        }else {
+	        	System.out.print("NO Records Present...");
+	        }
+	        break;
+			case 3:
+				logger.info("User LoginOut from Application");
+				System.out.println("Exiting the program...");
+				run = false; // Stop the loop
+			break;
+			
+			default:
+				System.out.println("Invalid choice ....");
+				break;
+			}
+		}
+	}
 }

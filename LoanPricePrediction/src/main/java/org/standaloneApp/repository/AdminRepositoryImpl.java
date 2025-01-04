@@ -2,8 +2,10 @@ package org.standaloneApp.repository;
 
 import java.util.*;
 
-public class AdminRepositoryImpl extends DBState implements AdminRepository{
+import org.standaloneApp.model.LoanModel;
 
+public class AdminRepositoryImpl extends DBState implements AdminRepository{
+	List<LoanModel> list;
 	@Override
 	public boolean adminLogin(String name,String password) {
 		
@@ -113,6 +115,60 @@ public class AdminRepositoryImpl extends DBState implements AdminRepository{
 			return false;
 		}
 
+	}
+
+	@Override
+	public List<LoanModel> loanApprovalRecords() {
+		list=new ArrayList<>();
+		try {
+			stmt = conn.prepareStatement(Query.getListApproved);
+			rs = stmt.executeQuery();
+			
+			while(rs.next()) {
+				LoanModel model = new LoanModel();
+				model.setBid(rs.getInt(1));
+				model.setName(rs.getString(2));
+				model.setLoan_amt(rs.getFloat(3));
+				model.setCred_score(rs.getInt(4));
+				model.setIncome(rs.getFloat(5));
+		
+				list.add(model);
+			}
+			
+			return list.size() > 0 ? list : null;
+			
+	}
+	catch(Exception ex) {
+		System.out.println("Error in LoanApprovalRecords: "+ex);
+		return null;
+	}
+	}
+
+	@Override
+	public List<LoanModel> loanRejectedRecords() {
+		list=new ArrayList<>();
+		try {
+			stmt = conn.prepareStatement(Query.getListRejected);
+			rs = stmt.executeQuery();
+			
+			while(rs.next()) {
+				LoanModel model = new LoanModel();
+				model.setBid(rs.getInt(1));
+				model.setName(rs.getString(2));
+				model.setLoan_amt(rs.getFloat(3));
+				model.setCred_score(rs.getInt(4));
+				model.setIncome(rs.getFloat(5));
+		
+				list.add(model);
+			}
+			
+			return list.size() > 0 ? list : null;
+			
+	}
+	catch(Exception ex) {
+		System.out.println("Error in LoanRejectedRecords: "+ex);
+		return null;
+		}
 	}	
 }
 

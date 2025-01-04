@@ -1,5 +1,6 @@
 package org.standaloneApp.service;
 
+import org.standaloneApp.model.LoanModel;
 import org.standaloneApp.repository.AdminRepository;
 import org.standaloneApp.repository.AdminRepositoryImpl;
 import java.util.*;
@@ -26,6 +27,14 @@ public class AdminServiceImpl implements AdminService {
 	@Override
 	public boolean deleteLoanName(String currName) {
 		return admin.deleteLoanName(currName);
+	}
+	@Override
+	public List<LoanModel> loanApprovalRecords() {
+		return admin.loanApprovalRecords();
+	}
+	@Override
+	public List<LoanModel> loanRejectedRecords() {
+		return admin.loanRejectedRecords();
 	}
 }
 
